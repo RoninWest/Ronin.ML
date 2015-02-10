@@ -15,21 +15,21 @@ namespace Ronin.ML.Text
 		readonly IStemmer _logic;
 		readonly IWordNormalizer _processor;
 
-		public StemNormalizer(IWordNormalizer processor, StemLanguage language = StemLanguage.Default)
+		public StemNormalizer(IWordNormalizer processor, TextLanguage language = TextLanguage.Default)
 		{
 			_processor = processor;
 			switch (language)
 			{
-				case StemLanguage.English:
+				case TextLanguage.English:
 					_logic = new EnglishStemmer();
 					break;
-				case StemLanguage.Spanish:
+				case TextLanguage.Spanish:
 					_logic = new SpanishStemmer();
 					break;
-				case StemLanguage.French:
+				case TextLanguage.French:
 					_logic = new FrenchStemmer();
 					break;
-				case StemLanguage.German:
+				case TextLanguage.German:
 					_logic = new GermanStemmer();
 					break;
 				default:

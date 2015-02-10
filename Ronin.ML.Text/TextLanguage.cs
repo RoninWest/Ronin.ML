@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Ronin.ML.Text
 {
-	public enum StemLanguage : int
+	public enum TextLanguage : int
 	{
 		Default = English,
 		English = 0,

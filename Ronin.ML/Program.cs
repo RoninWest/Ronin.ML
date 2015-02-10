@@ -11,8 +11,11 @@ namespace Ronin.ML
 	{
 		static void Main(string[] args)
 		{
-			IWordNormalizer wp = new CaseNormalizer(new StemNormalizer(null));
-			foreach (string s in args)
+			Func<IWordNormalizer, IWordNormalizer> lCaseStem = n => new CaseNormalizer(new StemNormalizer(n));
+
+			IWordNormalizer stopWords = new StopWordNormalizer(lCaseStem(null), TextLanguage.Default);
+			IWordNormalizer wp = lCaseStem(stopWords);
+            foreach (string s in args)
 			{
 				if (string.IsNullOrWhiteSpace(s))
 					continue;

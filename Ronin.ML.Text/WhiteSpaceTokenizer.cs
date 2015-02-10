@@ -19,7 +19,7 @@ namespace Ronin.ML.Text
 			var op = RegexOptions.Compiled | RegexOptions.Multiline;
 			if (invariant)
 				op |= RegexOptions.CultureInvariant;
-            _spaceRE = new Regex(@"\s+", op);
+            _spaceRE = new Regex(@"\S+", op);
 		}
 
 		public IEnumerable<WordToken> Process(string data)
