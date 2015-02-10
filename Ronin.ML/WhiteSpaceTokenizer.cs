@@ -22,7 +22,7 @@ namespace Ronin.ML
             _spaceRE = new Regex(@"\s+", op);
 		}
 
-		public IEnumerable<WordToken> Tokenize(string data)
+		public IEnumerable<WordToken> Process(string data)
 		{
 			ICollection<WordToken> wlist;
 			MatchCollection mc = _spaceRE.Matches(data);

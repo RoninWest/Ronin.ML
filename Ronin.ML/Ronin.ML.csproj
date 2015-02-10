@@ -47,16 +47,17 @@
     <Compile Include="CaseModification.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="IStringTokenizer.cs" />
-    <Compile Include="IWordProcessor.cs" />
-    <Compile Include="CaseProcessor.cs" />
+    <Compile Include="IWordNormalizer.cs" />
+    <Compile Include="CaseNormalizer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StemLanguage.cs" />
-    <Compile Include="StemProcessor.cs" />
+    <Compile Include="StemNormalizer.cs" />
     <Compile Include="WhiteSpaceTokenizer.cs" />
     <Compile Include="WordContext.cs" />
+    <Compile Include="WordIndexGenerator.cs" />
     <Compile Include="WordToken.cs" />
-    <Compile Include="WordContextPositions.cs" />
+    <Compile Include="WordIndex.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

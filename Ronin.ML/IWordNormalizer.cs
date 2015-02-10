@@ -7,13 +7,14 @@ using System.Threading.Tasks;
 namespace Ronin.ML
 {
 	/// <summary>
-	/// Chunk strings into words
+	/// How to process the word to fix irregularity
 	/// </summary>
-	public interface IStringTokenizer
+	public interface IWordNormalizer
 	{
 		/// <summary>
-		/// Tokenize string
+		/// Normalize word
 		/// </summary>
-		IEnumerable<WordToken> Process(string data);
+		/// <param name="word"></param>
+		void Process(WordContext word);
 	}
 }

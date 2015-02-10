@@ -9,13 +9,13 @@ namespace Ronin.ML
 	/// <summary>
 	/// Simply lower case the word
 	/// </summary>
-	public class CaseProcessor : IWordProcessor
+	public class CaseNormalizer : IWordNormalizer
 	{
 		readonly bool _invariant;
 		readonly CaseModification _mod;
-		readonly IWordProcessor _processor;
+		readonly IWordNormalizer _processor;
 
-		public CaseProcessor(IWordProcessor processor, CaseModification mod = CaseModification.Default, bool invariant = false)
+		public CaseNormalizer(IWordNormalizer processor, CaseModification mod = CaseModification.Default, bool invariant = false)
 		{
 			_processor = processor;
 			_mod = mod;

@@ -10,7 +10,7 @@ namespace Ronin.ML
 	{
 		static void Main(string[] args)
 		{
-			IWordProcessor wp = new CaseProcessor(new StemProcessor(null));
+			IWordNormalizer wp = new CaseNormalizer(new StemNormalizer(null));
 			foreach (string s in args)
 			{
 				if (string.IsNullOrWhiteSpace(s))

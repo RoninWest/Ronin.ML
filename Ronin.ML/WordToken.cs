@@ -26,8 +26,8 @@ namespace Ronin.ML
 			get { return _word; }
 			set
 			{
-				if (string.IsNullOrWhiteSpace(value))
-					throw new ArgumentException("Word can not be null or blank");
+				if (string.IsNullOrEmpty(value))
+					throw new ArgumentException("Word can not be null or empty");
 
 				_word = value;
 			}

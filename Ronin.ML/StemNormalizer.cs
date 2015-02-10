@@ -10,12 +10,12 @@ namespace Ronin.ML
 	/// <summary>
 	/// SnowBall stemmer for common languages
 	/// </summary>
-	public class StemProcessor : IWordProcessor
+	public class StemNormalizer : IWordNormalizer
 	{
 		readonly IStemmer _logic;
-		readonly IWordProcessor _processor;
+		readonly IWordNormalizer _processor;
 
-		public StemProcessor(IWordProcessor processor, StemLanguage language = StemLanguage.Default)
+		public StemNormalizer(IWordNormalizer processor, StemLanguage language = StemLanguage.Default)
 		{
 			_processor = processor;
 			switch (language)
