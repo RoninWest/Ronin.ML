@@ -45,13 +45,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CaseModification.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="IStringTokenizer.cs" />
     <Compile Include="IWordProcessor.cs" />
     <Compile Include="CaseProcessor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StemLanguage.cs" />
     <Compile Include="StemProcessor.cs" />
+    <Compile Include="WhiteSpaceTokenizer.cs" />
     <Compile Include="WordContext.cs" />
+    <Compile Include="WordToken.cs" />
+    <Compile Include="WordContextPositions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
