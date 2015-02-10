@@ -11,11 +11,31 @@ namespace Ronin.ML
 	{
 		static void Main(string[] args)
 		{
+			//NormalizeArgs(args);
+			BuildWordIndex(args);
+#if DEBUG
+			Console.WriteLine("Press ANY Key");
+			Console.ReadKey();
+#endif
+		}
+
+		static void BuildWordIndex(string[] args)
+		{
+			if (args.Length == 0 || !Uri.IsWellFormedUriString(args.FirstOrDefault(), UriKind.Absolute))
+				throw new InvalidOperationException("please provide a valid absolute URL");
+
+			var logic = new WebTextExtractor(args.First());
+			string content = logic.Get();
+			Console.WriteLine(content);
+		}
+
+		static void NormalizeArgs(string[] args)
+		{
 			Func<IWordNormalizer, IWordNormalizer> lCaseStem = n => new CaseNormalizer(new StemNormalizer(n));
 
 			IWordNormalizer stopWords = new StopWordNormalizer(lCaseStem(null), TextLanguage.Default);
 			IWordNormalizer wp = lCaseStem(stopWords);
-            foreach (string s in args)
+			foreach (string s in args)
 			{
 				if (string.IsNullOrWhiteSpace(s))
 					continue;
@@ -24,10 +44,7 @@ namespace Ronin.ML
 				wp.Process(wc);
 				Console.WriteLine("{0} ~~> {1}", wc.Original, wc.Result);
 			}
-#if DEBUG
-			Console.WriteLine("Press ANY Key");
-			Console.ReadKey();
-#endif
 		}
+
 	}
 }
