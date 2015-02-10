@@ -11,8 +11,8 @@ namespace Ronin.ML.Text
 	/// </summary>
 	public sealed class NoneWordTokenizer : RegularExpressionTokenizer
 	{
-		public NoneWordTokenizer(bool excludeNumber = false, bool invariant = false)
-			: base(BuildExpression(excludeNumber, invariant), exclusion: true)
+		public NoneWordTokenizer(bool excludeNumber = false, bool invariant = false, int minLenth = 2, int maxLength = 50)
+			: base(BuildExpression(excludeNumber, invariant), exclusion:true, minLenth:minLenth, maxLength:maxLength)
 		{
 		}
 

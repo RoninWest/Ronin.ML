@@ -13,20 +13,28 @@ namespace Ronin.ML.Text
 	{
 		readonly Regex _exp;
 		readonly bool _exclusion;
+		readonly int _minLen, _maxLen;
 
 		/// <summary>
 		/// Instantiate with expression and optional params
 		/// </summary>
 		/// <param name="expression">regular expression, required</param>
 		/// <param name="exclusion">optional exclusion flag. when true will split by the provided expression and when false (default) will capture only the provided expression</param>
-		/// <param name="minLenth">minimum word length</param>
-		public RegularExpressionTokenizer(Regex expression, bool exclusion = false, int minLenth = 2)
+		/// <param name="minLenth">minimum word length. default is 2</param>
+		/// <param name="maxLength">maximum word length. default is 50</param>
+		public RegularExpressionTokenizer(Regex expression, bool exclusion = false, int minLenth = 2, int maxLength = 50)
 		{
 			if (expression == null)
 				throw new ArgumentNullException("expression");
+			if (minLenth < 1)
+				throw new ArgumentOutOfRangeException("minLength < 1");
+			if (maxLength < minLenth)
+				throw new ArgumentOutOfRangeException("maxLength < minLength");
 
             _exp = expression;
 			_exclusion = exclusion;
+			_minLen = minLenth;
+			_maxLen = maxLength;
         }
 
 		public virtual IEnumerable<WordToken> Process(string data)
@@ -54,14 +62,16 @@ namespace Ronin.ML.Text
 					if (string.IsNullOrEmpty(value))
 						continue;
 
-					wlist.Add(new WordToken(value, start));
+					if (value.Length >= _minLen && value.Length <= _maxLen)
+						wlist.Add(new WordToken(value, start));
 				}
 			}
 			else
 			{
 				foreach (Match m in mc)
 				{
-					wlist.Add(new WordToken(m.Value, m.Index));
+					if(m.Length >= _minLen  && m.Length <= _maxLen)
+						wlist.Add(new WordToken(m.Value, m.Index));
 				}
 			}
 			return wlist;
