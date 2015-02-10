@@ -26,7 +26,25 @@ namespace Ronin.ML
 
 			var logic = new WebTextExtractor(args.First());
 			string content = logic.Get();
-			Console.WriteLine(content);
+
+			Func<IWordNormalizer, IWordNormalizer> lCaseStem = n => new CaseNormalizer(new StemNormalizer(n));
+
+			IWordNormalizer stopWords = new StopWordNormalizer(lCaseStem(null), TextLanguage.Default);
+			IWordNormalizer wp = lCaseStem(stopWords);
+
+			var indexer = new WordIndexGenerator(new WhiteSpaceTokenizer(), wp);
+			WordIndex wi = indexer.Process(content);
+			if (wi == null)
+				Console.WriteLine("<null>");
+			else if (wi.Count == 0)
+				Console.WriteLine("<empty>");
+			else
+			{
+				foreach (var p in wi)
+				{
+					Console.WriteLine("{0} @ [{1}]", p.Key, string.Join(",", p.Value));
+				}
+			}
 		}
 
 		static void NormalizeArgs(string[] args)

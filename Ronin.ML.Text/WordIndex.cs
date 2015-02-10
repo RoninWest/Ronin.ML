@@ -39,6 +39,9 @@ namespace Ronin.ML.Text
 
 		public bool Add(string word, int position)
 		{
+			if (string.IsNullOrWhiteSpace(word))
+				return false;
+
 			if (_m.ContainsKey(word))
 				return _m[word].Add(position);
 			else
@@ -57,6 +60,9 @@ namespace Ronin.ML.Text
 
 		public void Add(string key, ICollection<int> value)
 		{
+			if (string.IsNullOrWhiteSpace(key))
+				return;
+
 			_m.Add(key, new HashSet<int>(value));
 		}
 
@@ -92,6 +98,9 @@ namespace Ronin.ML.Text
 
 		public bool Remove(string key)
 		{
+			if (string.IsNullOrWhiteSpace(key))
+				return false;
+
 			return _m.Remove(key);
 		}
 
