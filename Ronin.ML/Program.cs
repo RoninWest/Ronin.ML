@@ -32,7 +32,7 @@ namespace Ronin.ML
 			IWordNormalizer stopWords = new StopWordNormalizer(lCaseStem(null), TextLanguage.Default);
 			IWordNormalizer wp = lCaseStem(stopWords);
 
-			var indexer = new WordIndexGenerator(new WhiteSpaceTokenizer(), wp);
+			var indexer = new WordIndexGenerator(new NoneWordTokenizer(excludeNumber:true), wp);
 			WordIndex wi = indexer.Process(content);
 			if (wi == null)
 				Console.WriteLine("<null>");

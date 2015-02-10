@@ -15,7 +15,7 @@ namespace Ronin.ML.Text
 	public class StopWordNormalizer : IWordNormalizer
 	{
 		/// <summary>
-		/// Instanciate with language
+		/// Instantiate with language
 		/// </summary>
 		public StopWordNormalizer(IWordNormalizer processor, TextLanguage lang)
 			: this(processor, new WhiteSpaceTokenizer(), GetLanguageFiles(lang))
@@ -56,7 +56,7 @@ namespace Ronin.ML.Text
 		/*
 		//TODO: later feature to let someone else manage this list if available remotely
 		/// <summary>
-		/// Instanciate with remote files
+		/// Instantiate with remote files
 		/// </summary>
 		public StopWordNormalizer(IWordNormalizer processor, IStringTokenizer chunker, params Uri[] files)
 			: this(processor, ExtractWords(chunker, GetStreams(files)))
@@ -70,7 +70,7 @@ namespace Ronin.ML.Text
 		*/
 
 		/// <summary>
-		/// Instanciate with local files
+		/// Instantiate with local files
 		/// </summary>
 		public StopWordNormalizer(IWordNormalizer processor, IStringTokenizer chunker, params FileInfo[] files)
 			: this(processor, ExtractWords(chunker, GetStreams(files)))
@@ -118,7 +118,7 @@ namespace Ronin.ML.Text
 		readonly IWordNormalizer _processor;
 
 		/// <summary>
-		/// Instanciate with static stop words
+		/// Instantiate with static stop words
 		/// </summary>
 		public StopWordNormalizer(IWordNormalizer processor, IEnumerable<string> words)
 		{

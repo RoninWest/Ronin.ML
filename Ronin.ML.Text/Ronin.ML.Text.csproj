@@ -49,8 +49,10 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="IStringTokenizer.cs" />
     <Compile Include="IWordNormalizer.cs" />
+    <Compile Include="NoneWordTokenizer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RegularExpressionTokenizer.cs" />
     <Compile Include="StopWordNormalizer.cs" />
     <Compile Include="TextLanguage.cs" />
     <Compile Include="StemNormalizer.cs" />

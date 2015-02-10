@@ -3,39 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Ronin.ML.Text
 {
 	/// <summary>
-	/// Chunk a string into words by white space
+	/// Simple string split by white space
 	/// </summary>
-	public class WhiteSpaceTokenizer : IStringTokenizer
+	public sealed class WhiteSpaceTokenizer : RegularExpressionTokenizer
 	{
-		readonly Regex _spaceRE;
+		public WhiteSpaceTokenizer(bool invariant = false) 
+			: base(BuildExpression(invariant), exclusion:false)
+        {
+		}
 
-		public WhiteSpaceTokenizer(bool invariant = false)
+		static Regex BuildExpression(bool invariant)
 		{
 			var op = RegexOptions.Compiled | RegexOptions.Multiline;
 			if (invariant)
 				op |= RegexOptions.CultureInvariant;
-            _spaceRE = new Regex(@"\S+", op);
-		}
 
-		public IEnumerable<WordToken> Process(string data)
-		{
-			ICollection<WordToken> wlist;
-			MatchCollection mc = _spaceRE.Matches(data);
-			if (mc.Count > 10000)
-				wlist = new LinkedList<WordToken>();
-			else
-				wlist = new List<WordToken>(mc.Count);
-
-			foreach (Match m in mc)
-			{
-				wlist.Add(new WordToken(m.Value, m.Index));
-			}
-			return wlist;
+			return new Regex(@"\S+", op);
 		}
+		
 	}
 }

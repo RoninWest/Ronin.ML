@@ -16,7 +16,7 @@ namespace Ronin.ML
 	public class WebTextExtractor
 	{
 		/// <summary>
-		/// Instanciate with base path URL
+		/// Instantiate with base path URL
 		/// </summary>
 		/// <param name="basePath"></param>
 		/// <remarks>base path is required due to rest-sharp work flow.  It is possible to add authentication support here later.</remarks>
@@ -28,7 +28,7 @@ namespace Ronin.ML
 		readonly RestClient _client;
 
 		/// <summary>
-		/// Instanciate with base path URL
+		/// Instantiate with base path URL
 		/// </summary>
 		/// <param name="basePath"></param>
 		/// <remarks>base path is required due to rest-sharp work flow.  It is possible to add authentication support here later.</remarks>
