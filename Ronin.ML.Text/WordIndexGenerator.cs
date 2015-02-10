@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ronin.ML
+namespace Ronin.ML.Text
 {
 	/// <summary>
 	/// Generate word index using tokenizer to chunk and normalizer to post process chunking results
@@ -36,6 +36,9 @@ namespace Ronin.ML
 			var wi = new WordIndex();
 			foreach (WordToken wt in _tokenizer.Process(s))
 			{
+				if (string.IsNullOrEmpty(wt.Word))
+					continue;
+
 				var wc = new WordContext(wt.Word);
 				_normalizer.Process(wc);
 				wi.Add(wc.Result, wt.Position);

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Iveonik.Stemmers;
 
-namespace Ronin.ML
+namespace Ronin.ML.Text
 {
 	/// <summary>
 	/// SnowBall stemmer for common languages
@@ -39,6 +39,9 @@ namespace Ronin.ML
 
 		public void Process(WordContext word)
 		{
+			if (word.Result == null)
+				return;
+
 			word.Result = _logic.Stem(word.Result);
 
 			if(_processor != null)

@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ronin.ML
+namespace Ronin.ML.Text
 {
 	public class WordContext
 	{
 		public WordContext(string original)
 		{
-			if (string.IsNullOrWhiteSpace(original))
+			if (string.IsNullOrEmpty(original))
 				throw new ArgumentException("Original can not be null or empty");
 
 			_og = original;

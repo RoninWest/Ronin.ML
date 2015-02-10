@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ronin.ML
+namespace Ronin.ML.Text
 {
 	/// <summary>
 	/// Chunk strings into words

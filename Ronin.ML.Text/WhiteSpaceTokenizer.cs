@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Ronin.ML
+namespace Ronin.ML.Text
 {
 	/// <summary>
 	/// Chunk a string into words by white space

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ronin.ML
+namespace Ronin.ML.Text
 {
 	/// <summary>
 	/// Inverted word index that contains the word itself as keys and relative positions (from the begining of the document) where they appears

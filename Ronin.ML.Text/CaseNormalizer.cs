@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ronin.ML
+namespace Ronin.ML.Text
 {
 	/// <summary>
 	/// Simply lower case the word
@@ -24,6 +24,9 @@ namespace Ronin.ML
 
 		public void Process(WordContext word)
 		{
+			if (word.Result == null)
+				return;
+
 			switch (_mod)
 			{
 				case CaseModification.Upper:
