@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using RestSharp;
 using HtmlAgilityPack;
+using System.Web;
 
 namespace Ronin.ML
 {
@@ -87,17 +88,48 @@ namespace Ronin.ML
 				return response.Content;
 		}
 
+		/// <summary>
+		/// clean first then return parsed result
+		/// </summary>
 		string CleanParse(HtmlNode node)
 		{
 			if (node == null)
 				return null;
 
 			Clean(node);
-			return node.InnerText;
+			return RestSharp.Contrib.HttpUtility.HtmlDecode(node.InnerText);
 		}
 
+		/// <summary>
+		/// Black list
+		/// </summary>
+		readonly string[] REMOVE_NODES = new[] { "script", "link", "style", "code" };
+
+		/// <summary>
+		/// Recursive cleaning of unwanted content by tag black list
+		/// </summary>
 		void Clean(HtmlNode node)
 		{
+			if (node == null)
+				return;
+
+			foreach (string r in REMOVE_NODES)
+			{
+				HtmlNode cn;
+				while ((cn = node.Element(r)) != null)
+				{
+					node.RemoveChild(cn);
+				}
+            }
+
+			IEnumerable<HtmlNode> children = node.Descendants();
+			if (children != null)
+			{
+				foreach (HtmlNode c in children)
+				{
+					Clean(c);
+				}
+			}
 		}
     }
 }
