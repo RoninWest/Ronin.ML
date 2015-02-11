@@ -11,8 +11,11 @@ namespace Ronin.ML
 	{
 		static void Main(string[] args)
 		{
+			DateTime started = DateTime.UtcNow;
 			//NormalizeArgs(args);
 			BuildWordIndex(args);
+
+			Console.WriteLine("Took: {0}", DateTime.UtcNow - started);
 #if DEBUG
 			Console.WriteLine("\r\nPress ANY Key");
 			Console.ReadKey();
@@ -24,9 +27,6 @@ namespace Ronin.ML
 			if (args.Length == 0 || !Uri.IsWellFormedUriString(args.FirstOrDefault(), UriKind.Absolute))
 				throw new InvalidOperationException("please provide a valid absolute URL");
 
-			var logic = new WebTextExtractor(args.First());
-			string content = logic.Get();
-
 			Func<IWordProcessor, IWordProcessor> lCaseStem = n => new LengthFilter(
 				new CaseNormalizer(
 					new StemNormalizer(n)
@@ -37,7 +37,16 @@ namespace Ronin.ML
 			IWordProcessor wp = lCaseStem(stopWords);
 
 			var indexer = new WordIndexGenerator(new NoneWordTokenizer(excludeNumber:true), wp);
+
+			var logic = new WebTextExtractor(args.First());
+			string content = logic.Get();
+			
 			WordIndex wi = indexer.Process(content);
+			Print(wi);
+		}
+
+		static void Print(WordIndex wi)
+		{
 			if (wi == null)
 				Console.WriteLine("<null>");
 			else if (wi.Count == 0)
