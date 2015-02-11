@@ -83,7 +83,12 @@ namespace Ronin.ML.Text
 
 		public void CopyTo(KeyValuePair<string, ICollection<int>>[] array, int arrayIndex)
 		{
-			_m.ToArray().CopyTo(array, arrayIndex);
+			int i = arrayIndex;
+			foreach (var p in _m)
+			{
+				array[i] = new KeyValuePair<string, ICollection<int>>(p.Key, p.Value);
+				i++;
+			}
 		}
 
 		public IEnumerator<KeyValuePair<string, ICollection<int>>> GetEnumerator()

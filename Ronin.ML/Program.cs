@@ -14,7 +14,7 @@ namespace Ronin.ML
 			//NormalizeArgs(args);
 			BuildWordIndex(args);
 #if DEBUG
-			Console.WriteLine("Press ANY Key");
+			Console.WriteLine("\r\nPress ANY Key");
 			Console.ReadKey();
 #endif
 		}
@@ -44,11 +44,14 @@ namespace Ronin.ML
 				Console.WriteLine("<empty>");
 			else
 			{
-				foreach (var p in wi)
+				var reOrder = from p in wi
+							  orderby p.Value.Count descending, p.Key.Length descending, p.Value.First() ascending
+							  select p;
+				foreach (var p in reOrder.Take(100))
 				{
-					Console.WriteLine("{0,-20} x{1,-2} @ [{2}]", p.Key, p.Value.Count, string.Join(",", p.Value));
+					Console.Write("{0}:{1}, ", p.Key, p.Value.Count);
 				}
-				Console.WriteLine("Total Words: {0:N0}", wi.Count);
+				Console.WriteLine("\r\n====================\r\nTotal Words: {0:N0}", wi.Count);
 			}
 		}
 

@@ -103,7 +103,7 @@ namespace Ronin.ML
 		/// <summary>
 		/// Black list
 		/// </summary>
-		readonly string[] REMOVE_NODES = new[] { "script", "link", "style", "code" };
+		readonly string[] REMOVE_NODES = new[] { "script", "link", "style", "code", "nav", "menu", "header", "footer", "aside" };
 
 		/// <summary>
 		/// Recursive cleaning of unwanted content by tag black list
