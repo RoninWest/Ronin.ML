@@ -9,16 +9,16 @@ using System.Reflection;
 namespace Ronin.ML.Text
 {
 	/// <summary>
-	/// Remove all stop words and subsequent processing of them.
+	/// Remove all common language specific stop words from the input
 	/// <see cref="https://code.google.com/p/stop-words/"/>
 	/// </summary>
-	public class StopWordFilter : IWordProcessor
+	public class StopWordFilter : IgnoreWordFilter
 	{
 		/// <summary>
 		/// Instantiate with language
 		/// </summary>
 		public StopWordFilter(IWordProcessor processor, TextLanguage lang)
-			: this(processor, new WhiteSpaceTokenizer(), GetLanguageFiles(lang))
+			: base(processor, new WhiteSpaceTokenizer(), GetLanguageFiles(lang))
 		{
 		}
 
@@ -34,8 +34,8 @@ namespace Ronin.ML.Text
 				if (languageName == defaultLang)
 					languageName = "english";
 
-				return (from f in root.EnumerateFiles('*' + languageName + '*', SearchOption.AllDirectories)
-						//where ".txt" == f.Extension
+				string searchExp = '*' + languageName + '*';
+				return (from f in root.EnumerateFiles(searchExp, SearchOption.AllDirectories)
 						select f).ToArray();
 			}
 			else
@@ -53,102 +53,5 @@ namespace Ronin.ML.Text
 			}
 		}
 
-		/*
-		//TODO: later feature to let someone else manage this list if available remotely
-		/// <summary>
-		/// Instantiate with remote files
-		/// </summary>
-		public StopWordNormalizer(IWordNormalizer processor, IStringTokenizer chunker, params Uri[] files)
-			: this(processor, ExtractWords(chunker, GetStreams(files)))
-		{
-		}
-
-		static IEnumerable<Stream> GetStreams(params Uri[] paths)
-		{
-			throw new NotImplementedException();
-		}
-		*/
-
-		/// <summary>
-		/// Instantiate with local files
-		/// </summary>
-		public StopWordFilter(IWordProcessor processor, IStringTokenizer chunker, params FileInfo[] files)
-			: this(processor, ExtractWords(chunker, GetStreams(files)))
-		{
-		}
-
-		static IEnumerable<Stream> GetStreams(params FileInfo[] paths)
-		{
-			return from p in paths
-				   where p != null && p.Exists
-				   let fs = p.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite)
-				   select fs;
-		}
-
-		static ICollection<string> ExtractWords(IStringTokenizer chunker, IEnumerable<Stream> streams)
-		{
-			if (chunker == null)
-				throw new ArgumentNullException("chunker");
-
-			var words = new LinkedList<string>();
-			streams.ForEach(s => AppendWords(words, s, chunker));
-			return words;
-		}
-
-		static void AppendWords(ICollection<string> words, Stream s, IStringTokenizer chunker)
-		{
-			if (s == null || !s.CanRead)
-				return;
-
-			string txt;
-			using (var sr = new StreamReader(s))
-			{
-				txt = sr.ReadToEnd();
-				sr.Close();
-			}
-
-			IEnumerable<WordToken> tokens = chunker.Process(txt);
-            foreach (WordToken wt in tokens)
-			{
-				words.Add(wt.Word);
-			}
-		}
-
-		readonly HashSet<string> _stops = new HashSet<string>();
-		readonly IWordProcessor _processor;
-
-		/// <summary>
-		/// Instantiate with static stop words
-		/// </summary>
-		public StopWordFilter(IWordProcessor processor, IEnumerable<string> words)
-		{
-			_processor = processor;
-			if (processor != null)
-			{
-				words.ForEach(w =>
-				{
-					var wc = new WordContext(w);
-					processor.Process(wc);
-					if (!string.IsNullOrWhiteSpace(wc.Result))
-						_stops.Add(wc.Result);
-				});
-			}
-			else
-				words.ForEach(w => _stops.Add(w));
-		}
-
-		/// <summary>
-		/// Remove all stop words
-		/// </summary>
-		public void Process(WordContext word)
-		{
-			if (word.Result == null)
-				return;
-
-			if (_stops.Contains(word.Result))
-				word.Result = null;
-			else if (_processor != null)
-				_processor.Process(word);
-		}
 	}
 }
