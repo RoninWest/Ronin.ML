@@ -12,9 +12,9 @@ namespace Ronin.ML.Text
 	public sealed class WordIndexGenerator
 	{
 		readonly IStringTokenizer _tokenizer;
-		readonly IWordNormalizer _normalizer;
+		readonly IWordProcessor _normalizer;
 
-		public WordIndexGenerator(IStringTokenizer tokenizer, IWordNormalizer normalizer)
+		public WordIndexGenerator(IStringTokenizer tokenizer, IWordProcessor normalizer)
 		{
 			if (tokenizer == null)
 				throw new ArgumentNullException("tokenizer");

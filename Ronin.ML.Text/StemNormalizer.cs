@@ -10,14 +10,16 @@ namespace Ronin.ML.Text
 	/// <summary>
 	/// SnowBall stemmer for common languages
 	/// </summary>
-	public class StemNormalizer : IWordNormalizer
+	public class StemNormalizer : IWordProcessor
 	{
+		readonly IWordProcessor _processor;
 		readonly IStemmer _logic;
-		readonly IWordNormalizer _processor;
+		readonly TextLanguage _language;
 
-		public StemNormalizer(IWordNormalizer processor, TextLanguage language = TextLanguage.Default)
+		public StemNormalizer(IWordProcessor processor, TextLanguage language = TextLanguage.Default)
 		{
 			_processor = processor;
+
 			switch (language)
 			{
 				case TextLanguage.English:
@@ -35,6 +37,12 @@ namespace Ronin.ML.Text
 				default:
 					throw new ArgumentOutOfRangeException("Unknown Stemmer language: " + language);
 			}
+			_language = language;
+		}
+
+		public TextLanguage Language
+		{
+			get { return _language; }
 		}
 
 		public void Process(WordContext word)

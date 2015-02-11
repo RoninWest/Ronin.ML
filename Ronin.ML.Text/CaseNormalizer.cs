@@ -9,32 +9,33 @@ namespace Ronin.ML.Text
 	/// <summary>
 	/// Simply lower case the word
 	/// </summary>
-	public class CaseNormalizer : IWordNormalizer
+	public class CaseNormalizer : IWordProcessor
 	{
-		readonly bool _invariant;
-		readonly CaseModification _mod;
-		readonly IWordNormalizer _processor;
+		readonly IWordProcessor _processor;
 
-		public CaseNormalizer(IWordNormalizer processor, CaseModification mod = CaseModification.Default, bool invariant = false)
+		public CaseNormalizer(IWordProcessor processor, CaseModification mod = CaseModification.Default, bool invariant = false)
 		{
 			_processor = processor;
-			_mod = mod;
-			_invariant = invariant;
+			CaseModification = mod;
+			Invariant = invariant;
         }
+
+		public bool Invariant { get; set; }
+		public CaseModification CaseModification { get; set; }
 
 		public void Process(WordContext word)
 		{
 			if (word.Result == null)
 				return;
 
-			switch (_mod)
+			switch (CaseModification)
 			{
 				case CaseModification.Upper:
-					word.Result = _invariant ? word.Result.ToUpperInvariant() : word.Result.ToUpper();
+					word.Result = Invariant ? word.Result.ToUpperInvariant() : word.Result.ToUpper();
 					break;
 				case CaseModification.Lower:
 				default:
-					word.Result = _invariant ? word.Result.ToLowerInvariant() : word.Result.ToLower();
+					word.Result = Invariant ? word.Result.ToLowerInvariant() : word.Result.ToLower();
 					break;
 			}
 

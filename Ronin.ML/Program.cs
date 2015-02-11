@@ -27,10 +27,14 @@ namespace Ronin.ML
 			var logic = new WebTextExtractor(args.First());
 			string content = logic.Get();
 
-			Func<IWordNormalizer, IWordNormalizer> lCaseStem = n => new CaseNormalizer(new StemNormalizer(n));
+			Func<IWordProcessor, IWordProcessor> lCaseStem = n => new LengthFilter(
+				new CaseNormalizer(
+					new StemNormalizer(n)
+				), 
+			min:3);
 
-			IWordNormalizer stopWords = new StopWordNormalizer(lCaseStem(null), TextLanguage.Default);
-			IWordNormalizer wp = lCaseStem(stopWords);
+			IWordProcessor stopWords = new StopWordFilter(lCaseStem(null), TextLanguage.Default);
+			IWordProcessor wp = lCaseStem(stopWords);
 
 			var indexer = new WordIndexGenerator(new NoneWordTokenizer(excludeNumber:true), wp);
 			WordIndex wi = indexer.Process(content);
@@ -42,17 +46,22 @@ namespace Ronin.ML
 			{
 				foreach (var p in wi)
 				{
-					Console.WriteLine("{0} @ [{1}]", p.Key, string.Join(",", p.Value));
+					Console.WriteLine("{0,-20} x{1,-2} @ [{2}]", p.Key, p.Value.Count, string.Join(",", p.Value));
 				}
+				Console.WriteLine("Total Words: {0:N0}", wi.Count);
 			}
 		}
 
 		static void NormalizeArgs(string[] args)
 		{
-			Func<IWordNormalizer, IWordNormalizer> lCaseStem = n => new CaseNormalizer(new StemNormalizer(n));
+			Func<IWordProcessor, IWordProcessor> lCaseStem = n => new LengthFilter(
+				new CaseNormalizer(
+					new StemNormalizer(n)
+				)
+			);
 
-			IWordNormalizer stopWords = new StopWordNormalizer(lCaseStem(null), TextLanguage.Default);
-			IWordNormalizer wp = lCaseStem(stopWords);
+			IWordProcessor stopWords = new StopWordFilter(lCaseStem(null), TextLanguage.Default);
+			IWordProcessor wp = lCaseStem(stopWords);
 			foreach (string s in args)
 			{
 				if (string.IsNullOrWhiteSpace(s))
@@ -60,7 +69,7 @@ namespace Ronin.ML
 
 				var wc = new WordContext(s);
 				wp.Process(wc);
-				Console.WriteLine("{0} ~~> {1}", wc.Original, wc.Result);
+				Console.WriteLine("{0,-20} ==> {1}", wc.Original, wc.Result);
 			}
 		}
 

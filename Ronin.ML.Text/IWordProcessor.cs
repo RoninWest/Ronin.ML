@@ -9,7 +9,7 @@ namespace Ronin.ML.Text
 	/// <summary>
 	/// How to process the word to fix irregularity
 	/// </summary>
-	public interface IWordNormalizer
+	public interface IWordProcessor
 	{
 		/// <summary>
 		/// Normalize word

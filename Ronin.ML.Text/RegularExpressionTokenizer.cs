@@ -13,29 +13,36 @@ namespace Ronin.ML.Text
 	{
 		readonly Regex _exp;
 		readonly bool _exclusion;
-		readonly int _minLen, _maxLen;
 
 		/// <summary>
-		/// Instantiate with expression and optional params
+		/// Instantiate with expression and optional param
 		/// </summary>
 		/// <param name="expression">regular expression, required</param>
 		/// <param name="exclusion">optional exclusion flag. when true will split by the provided expression and when false (default) will capture only the provided expression</param>
-		/// <param name="minLenth">minimum word length. default is 2</param>
-		/// <param name="maxLength">maximum word length. default is 50</param>
-		public RegularExpressionTokenizer(Regex expression, bool exclusion = false, int minLenth = 2, int maxLength = 50)
+		public RegularExpressionTokenizer(Regex expression, bool exclusion = false)
 		{
 			if (expression == null)
 				throw new ArgumentNullException("expression");
-			if (minLenth < 1)
-				throw new ArgumentOutOfRangeException("minLength < 1");
-			if (maxLength < minLenth)
-				throw new ArgumentOutOfRangeException("maxLength < minLength");
 
             _exp = expression;
 			_exclusion = exclusion;
-			_minLen = minLenth;
-			_maxLen = maxLength;
         }
+
+		/// <summary>
+		/// Required: regular expression
+		/// </summary>
+		public Regex Expression
+		{
+			get { return _exp; }
+		}
+
+		/// <summary>
+		/// ReadOnly: optional exclusion flag. when true will split by the provided expression and when false (default) will capture only the provided expression.
+		/// </summary>
+		public bool Exclusion
+		{
+			get { return _exclusion; }
+		}
 
 		public virtual IEnumerable<WordToken> Process(string data)
 		{
@@ -62,16 +69,14 @@ namespace Ronin.ML.Text
 					if (string.IsNullOrEmpty(value))
 						continue;
 
-					if (value.Length >= _minLen && value.Length <= _maxLen)
-						wlist.Add(new WordToken(value, start));
+					wlist.Add(new WordToken(value, start));
 				}
 			}
 			else
 			{
 				foreach (Match m in mc)
 				{
-					if(m.Length >= _minLen  && m.Length <= _maxLen)
-						wlist.Add(new WordToken(m.Value, m.Index));
+					wlist.Add(new WordToken(m.Value, m.Index));
 				}
 			}
 			return wlist;

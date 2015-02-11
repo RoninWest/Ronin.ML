@@ -12,12 +12,12 @@ namespace Ronin.ML.Text
 	/// Remove all stop words and subsequent processing of them.
 	/// <see cref="https://code.google.com/p/stop-words/"/>
 	/// </summary>
-	public class StopWordNormalizer : IWordNormalizer
+	public class StopWordFilter : IWordProcessor
 	{
 		/// <summary>
 		/// Instantiate with language
 		/// </summary>
-		public StopWordNormalizer(IWordNormalizer processor, TextLanguage lang)
+		public StopWordFilter(IWordProcessor processor, TextLanguage lang)
 			: this(processor, new WhiteSpaceTokenizer(), GetLanguageFiles(lang))
 		{
 		}
@@ -72,7 +72,7 @@ namespace Ronin.ML.Text
 		/// <summary>
 		/// Instantiate with local files
 		/// </summary>
-		public StopWordNormalizer(IWordNormalizer processor, IStringTokenizer chunker, params FileInfo[] files)
+		public StopWordFilter(IWordProcessor processor, IStringTokenizer chunker, params FileInfo[] files)
 			: this(processor, ExtractWords(chunker, GetStreams(files)))
 		{
 		}
@@ -115,12 +115,12 @@ namespace Ronin.ML.Text
 		}
 
 		readonly HashSet<string> _stops = new HashSet<string>();
-		readonly IWordNormalizer _processor;
+		readonly IWordProcessor _processor;
 
 		/// <summary>
 		/// Instantiate with static stop words
 		/// </summary>
-		public StopWordNormalizer(IWordNormalizer processor, IEnumerable<string> words)
+		public StopWordFilter(IWordProcessor processor, IEnumerable<string> words)
 		{
 			_processor = processor;
 			if (processor != null)
