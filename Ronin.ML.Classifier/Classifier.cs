@@ -11,11 +11,11 @@ namespace Ronin.ML.Classifier
 	/// Use to separate stuff into buckets
 	/// </summary>
 	/// <remarks>Thread safe!</remarks>
-	public class Classifier<K, V>
+	public class Classifier<T, F>
 	{
-		readonly Func<IDictionary<K, V>> _getFeatures;
+		readonly Func<T, IEnumerable<F>> _getFeatures;
 
-		public Classifier(Func<IDictionary<K, V>> getFeatures) 
+		public Classifier(Func<T, IEnumerable<F>> getFeatures) 
 		{
 			if (getFeatures == null)
 				throw new ArgumentNullException("getFeatures");
@@ -25,22 +25,22 @@ namespace Ronin.ML.Classifier
 
 		#region Features
 
-		readonly ConcurrentDictionary<string, FeatureCount> _fc = new ConcurrentDictionary<string, FeatureCount>();
-		/// <summary>
-		/// Store feature stats
-		/// </summary>
-		public IDictionary<string, FeatureCount> Features
-		{
-			get { return _fc; }
-		}
+		readonly ConcurrentDictionary<F, FeatureCount> _fc = new ConcurrentDictionary<F, FeatureCount>();
+		///// <summary>
+		///// Store feature stats
+		///// </summary>
+		//public IDictionary<string, FeatureCount> Features
+		//{
+		//	get { return _fc; }
+		//}
 
 		/// <summary>
 		/// Increment the count for a feature/category pair
 		/// </summary>
-		/// <param name="feat">feature name</param>
+		/// <param name="feat">feature value</param>
 		/// <param name="cat">category name</param>
 		/// <returns>new category count value</returns>
-		public long IncrementFeature(string feat, string cat)
+		public long IncrementFeature(F feat, string cat)
 		{
 			FeatureCount fc = _fc.AddOrUpdate(feat,
 				f => new FeatureCount { { cat, 1 } },
@@ -55,10 +55,10 @@ namespace Ronin.ML.Classifier
 		/// <summary>
 		/// Return the count for a feature/category pair
 		/// </summary>
-		/// <param name="feat">feature name</param>
+		/// <param name="feat">feature value</param>
 		/// <param name="cat">category name</param>
 		/// <returns>count value</returns>
-		public long CountFeature(string feat, string cat)
+		public long CountFeature(F feat, string cat)
 		{
 			FeatureCount fc;
 			if (_fc.TryGetValue(feat, out fc) && fc.ContainsKey(cat))
@@ -72,13 +72,13 @@ namespace Ronin.ML.Classifier
 		#region Categories
 
 		readonly ConcurrentDictionary<string, long> _cc = new ConcurrentDictionary<string, long>();
-		/// <summary>
-		/// Store category stats
-		/// </summary>
-		public IDictionary<string, long> Categories
-		{
-			get { return _cc; }
-		}
+		///// <summary>
+		///// Store category stats
+		///// </summary>
+		//public IDictionary<string, long> Categories
+		//{
+		//	get { return _cc; }
+		//}
 
 		/// <summary>
 		/// Increment Category Count
@@ -102,6 +102,39 @@ namespace Ronin.ML.Classifier
 			return v;
 		}
 
+		/// <summary>
+		/// Total number of items
+		/// </summary>
+		public long TotalCategoryItems
+		{
+			get { return _cc.Values.Sum(); }
+		}
+
+		/// <summary>
+		/// List of all category keys
+		/// </summary>
+		public IEnumerable<string> CategoryNames
+		{
+			get { return _cc.Keys; }
+		}
+
 		#endregion
+
+		/// <summary>
+		/// Train with this item and classify it as such category
+		/// </summary>
+		/// <param name="item">Item to train</param>
+		/// <param name="category">category to classify item as</param>
+		public void Train(T item, string category)
+		{
+			if (item == null || item.Equals(default(T)))
+				throw new ArgumentException("item can not be null or default");
+
+			IEnumerable<F> features = _getFeatures(item);
+			long inc = 0;
+			features.ForEach(f => inc += this.IncrementFeature(f, category));
+			if(inc > 0) //only increment if feature is incremented at least once
+				this.IncrementCategory(category);
+		}
 	}
 }

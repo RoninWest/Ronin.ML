@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ronin.ML.Text
+namespace Ronin
 {
 	public static class Extensions
 	{
