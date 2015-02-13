@@ -15,7 +15,7 @@ namespace Ronin.ML.Classifier
 	/// <remarks>Thread safe!</remarks>
 	public class Classifier<T, F>
 	{
-		readonly IClassifierData<F> _data;
+		protected readonly IClassifierData<F> _data;
 		readonly Func<T, IEnumerable<F>> _getFeatures;
 
 		/// <summary>
@@ -39,7 +39,7 @@ namespace Ronin.ML.Classifier
 		/// </summary>
 		/// <param name="item">Item to train</param>
 		/// <param name="category">category to classify item as</param>
-		public void Train(T item, string category)
+		public virtual void Train(T item, string category)
 		{
 			if (item == null || item.Equals(default(T)))
 				throw new ArgumentException("item can not be null or default");
@@ -66,7 +66,7 @@ namespace Ronin.ML.Classifier
 		/// <param name="feature">Feature in question</param>
 		/// <param name="category">Category to test</param>
 		/// <returns>percentage value between 0 and 1. 1 being most likely and 0 being not</returns>
-		public double Probability(F feature, string category)
+		public virtual double Probability(F feature, string category)
 		{
 			long cc = _data.CountCategory(category);
 			if (cc == 0)
@@ -85,7 +85,7 @@ namespace Ronin.ML.Classifier
 		/// <param name="weight">weight of each feature</param>
 		/// <param name="assumedProb">assumed probability for unknowns</param>
 		/// <returns>percentage value between 0 and 1. 1 being most likely and 0 being not</returns>
-		public double WeightedProbability(F feature, string category, 
+		public virtual double WeightedProbability(F feature, string category, 
 			Func<F, string, double> prf, 
 			double weight = 1, double assumedProb = .5)
 		{
