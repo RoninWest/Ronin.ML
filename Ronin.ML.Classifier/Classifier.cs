@@ -10,46 +10,40 @@ namespace Ronin.ML.Classifier
 	/// <summary>
 	/// Use to separate stuff into buckets
 	/// </summary>
+	/// <typeparam name="T">Item type to train, and test</typeparam>
+	/// <typeparam name="F">Item feature type to compare for classification purpose</typeparam>
 	/// <remarks>Thread safe!</remarks>
 	public class Classifier<T, F>
 	{
+		readonly IClassifierData<F> _data;
 		readonly Func<T, IEnumerable<F>> _getFeatures;
 
-		public Classifier(Func<T, IEnumerable<F>> getFeatures) 
+		/// <summary>
+		/// CTOR
+		/// </summary>
+		/// <param name="data">Required: data service provider</param>
+		/// <param name="getFeatures">Required: feature extraction method</param>
+		public Classifier(IClassifierData<F> data, Func<T, IEnumerable<F>> getFeatures) 
 		{
+			if (data == null)
+				throw new ArgumentNullException("data");
 			if (getFeatures == null)
 				throw new ArgumentNullException("getFeatures");
 
+			_data = data;
 			_getFeatures = getFeatures;
 		}
 
-		#region Features
-
-		readonly ConcurrentDictionary<F, FeatureCount> _fc = new ConcurrentDictionary<F, FeatureCount>();
-		///// <summary>
-		///// Store feature stats
-		///// </summary>
-		//public IDictionary<string, FeatureCount> Features
-		//{
-		//	get { return _fc; }
-		//}
+		#region Features data methods
 
 		/// <summary>
 		/// Increment the count for a feature/category pair
 		/// </summary>
 		/// <param name="feat">feature value</param>
 		/// <param name="cat">category name</param>
-		/// <returns>new category count value</returns>
-		public long IncrementFeature(F feat, string cat)
+		public void IncrementFeature(F feat, string cat)
 		{
-			FeatureCount fc = _fc.AddOrUpdate(feat,
-				f => new FeatureCount { { cat, 1 } },
-				(f, cv) =>
-					{
-						cv.Increment(cat);
-						return cv;
-					});
-			return fc[cat];
+			_data.IncrementFeature(feat, cat);
 		}
 
 		/// <summary>
@@ -60,34 +54,21 @@ namespace Ronin.ML.Classifier
 		/// <returns>count value</returns>
 		public long CountFeature(F feat, string cat)
 		{
-			FeatureCount fc;
-			if (_fc.TryGetValue(feat, out fc) && fc.ContainsKey(cat))
-				return fc[cat];
-
-			return 0;
+			return _data.CountFeature(feat, cat);
 		}
 
 		#endregion
 
-		#region Categories
-
-		readonly ConcurrentDictionary<string, long> _cc = new ConcurrentDictionary<string, long>();
-		///// <summary>
-		///// Store category stats
-		///// </summary>
-		//public IDictionary<string, long> Categories
-		//{
-		//	get { return _cc; }
-		//}
+		#region Categories data methods
 
 		/// <summary>
 		/// Increment Category Count
 		/// </summary>
 		/// <param name="cat">category name</param>
 		/// <returns>new value</returns>
-		public long IncrementCategory(string cat)
+		public void IncrementCategory(string cat)
 		{
-			return _cc.AddOrUpdate(cat, 1, (c, v) => v + 1);
+			_data.IncrementCategory(cat);
 		}
 
 		/// <summary>
@@ -97,9 +78,7 @@ namespace Ronin.ML.Classifier
 		/// <returns>current value</returns>
 		public long CountCategory(string cat)
 		{
-			long v = 0;
-			_cc.TryGetValue(cat, out v);
-			return v;
+			return _data.CountCategory(cat);
 		}
 
 		/// <summary>
@@ -107,7 +86,7 @@ namespace Ronin.ML.Classifier
 		/// </summary>
 		public long TotalCategoryItems
 		{
-			get { return _cc.Values.Sum(); }
+			get { return _data.TotalCategoryItems(); }
 		}
 
 		/// <summary>
@@ -115,7 +94,7 @@ namespace Ronin.ML.Classifier
 		/// </summary>
 		public IEnumerable<string> CategoryNames
 		{
-			get { return _cc.Keys; }
+			get { return _data.CategoryNames(); }
 		}
 
 		#endregion
@@ -131,9 +110,16 @@ namespace Ronin.ML.Classifier
 				throw new ArgumentException("item can not be null or default");
 
 			IEnumerable<F> features = _getFeatures(item);
-			long inc = 0;
-			features.ForEach(f => inc += this.IncrementFeature(f, category));
-			if(inc > 0) //only increment if feature is incremented at least once
+			bool once = false;
+			if (features != null)
+			{
+				foreach (F f in features)
+				{
+					IncrementFeature(f, category);
+					once = true;
+				}
+			}
+			if(once)
 				this.IncrementCategory(category);
 		}
 	}

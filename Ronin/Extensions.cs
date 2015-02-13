@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Ronin
 {
+	/// <summary>
+	/// Common extensions
+	/// </summary>
 	public static class Extensions
 	{
 		/// <summary>
