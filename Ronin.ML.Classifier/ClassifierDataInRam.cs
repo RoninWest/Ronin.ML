@@ -74,7 +74,7 @@ namespace Ronin.ML.Classifier
 			get { return _cc; }
 		}
 
-		#region Categories
+		#region Categories methods
 
 		/// <summary>
 		/// Increment Category Count

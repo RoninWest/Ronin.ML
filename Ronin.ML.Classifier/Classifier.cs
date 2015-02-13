@@ -34,71 +34,6 @@ namespace Ronin.ML.Classifier
 			_getFeatures = getFeatures;
 		}
 
-		#region Features data methods
-
-		/// <summary>
-		/// Increment the count for a feature/category pair
-		/// </summary>
-		/// <param name="feat">feature value</param>
-		/// <param name="cat">category name</param>
-		public void IncrementFeature(F feat, string cat)
-		{
-			_data.IncrementFeature(feat, cat);
-		}
-
-		/// <summary>
-		/// Return the count for a feature/category pair
-		/// </summary>
-		/// <param name="feat">feature value</param>
-		/// <param name="cat">category name</param>
-		/// <returns>count value</returns>
-		public long CountFeature(F feat, string cat)
-		{
-			return _data.CountFeature(feat, cat);
-		}
-
-		#endregion
-
-		#region Categories data methods
-
-		/// <summary>
-		/// Increment Category Count
-		/// </summary>
-		/// <param name="cat">category name</param>
-		/// <returns>new value</returns>
-		public void IncrementCategory(string cat)
-		{
-			_data.IncrementCategory(cat);
-		}
-
-		/// <summary>
-		/// Count category
-		/// </summary>
-		/// <param name="cat">category name</param>
-		/// <returns>current value</returns>
-		public long CountCategory(string cat)
-		{
-			return _data.CountCategory(cat);
-		}
-
-		/// <summary>
-		/// Total number of items
-		/// </summary>
-		public long TotalCategoryItems
-		{
-			get { return _data.TotalCategoryItems(); }
-		}
-
-		/// <summary>
-		/// List of all category keys
-		/// </summary>
-		public IEnumerable<string> CategoryNames
-		{
-			get { return _data.CategoryNames(); }
-		}
-
-		#endregion
-
 		/// <summary>
 		/// Train with this item and classify it as such category
 		/// </summary>
@@ -108,6 +43,8 @@ namespace Ronin.ML.Classifier
 		{
 			if (item == null || item.Equals(default(T)))
 				throw new ArgumentException("item can not be null or default");
+			if (string.IsNullOrEmpty(category))
+				throw new ArgumentException("category can not be null or empty");
 
 			IEnumerable<F> features = _getFeatures(item);
 			bool once = false;
@@ -115,12 +52,58 @@ namespace Ronin.ML.Classifier
 			{
 				foreach (F f in features)
 				{
-					IncrementFeature(f, category);
+					_data.IncrementFeature(f, category);
 					once = true;
 				}
 			}
 			if(once)
-				this.IncrementCategory(category);
+				_data.IncrementCategory(category);
+		}
+
+		/// <summary>
+		/// Calculate probability that a feature belongs to a category
+		/// </summary>
+		/// <param name="feature">Feature in question</param>
+		/// <param name="category">Category to test</param>
+		/// <returns>percentage value between 0 and 1. 1 being most likely and 0 being not</returns>
+		public double Probability(F feature, string category)
+		{
+			long cc = _data.CountCategory(category);
+			if (cc == 0)
+				return 0;
+
+			long fc = _data.CountFeature(feature, category);
+			return (double)fc / cc;
+		}
+
+		/// <summary>
+		/// Better way to compute probability to not penalize things that doesn't appear as often
+		/// </summary>
+		/// <param name="feature">Feature in question</param>
+		/// <param name="category">Category to test</param>
+		/// <param name="prf">probability function</param>
+		/// <param name="weight">weight of each feature</param>
+		/// <param name="assumedProb">assumed probability for unknowns</param>
+		/// <returns>percentage value between 0 and 1. 1 being most likely and 0 being not</returns>
+		public double WeightedProbability(F feature, string category, 
+			Func<F, string, double> prf, 
+			double weight = 1, double assumedProb = .5)
+		{
+			if (feature == null || feature.Equals(default(F)))
+				throw new ArgumentException("feature can not be null or default");
+			if (string.IsNullOrEmpty(category))
+				throw new ArgumentException("category can not be null or empty");
+			if (prf == null)
+				throw new ArgumentNullException("prf");
+			if (assumedProb > 1 || assumedProb < 0)
+				throw new ArgumentOutOfRangeException("assumedProb > 1 || assumedProb < 0");
+
+			double basicProb = prf(feature, category);
+			long totals = (from c in _data.CategoryNames()
+						   select _data.CountFeature(feature, c)).Sum();
+
+			//weighted average
+			return ((weight * assumedProb) + (totals * basicProb)) / (weight + totals);
 		}
 	}
 }
