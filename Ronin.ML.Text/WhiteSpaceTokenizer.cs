@@ -11,7 +11,12 @@ namespace Ronin.ML.Text
 	/// </summary>
 	public sealed class WhiteSpaceTokenizer : RegularExpressionTokenizer
 	{
-		public WhiteSpaceTokenizer(bool invariant = false) 
+		public WhiteSpaceTokenizer()
+			: this(false)
+		{
+		}
+
+		public WhiteSpaceTokenizer(bool invariant) 
 			: base(BuildExpression(invariant), exclusion:false)
         {
 		}

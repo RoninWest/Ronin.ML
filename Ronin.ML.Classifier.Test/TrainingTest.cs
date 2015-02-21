@@ -12,6 +12,7 @@ namespace Ronin.ML.Classifier.Test
 	/// <summary>
 	/// Training tests
 	/// </summary>
+	[TestFixture(typeof(ClassifierDataInRAM<string, TrainingBucket>), typeof(WhiteSpaceTokenizer))]
 	[TestFixture(typeof(ClassifierDataInRAM<string, TrainingBucket>), typeof(NoneWordTokenizer))]
     public class TrainingTest
     {
