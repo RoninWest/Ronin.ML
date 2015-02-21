@@ -74,6 +74,18 @@ namespace Ronin.ML.Classifier.Test
 			double v = cf.Probability(set.Word, set.Bucket);
 			Assert.AreEqual(set.Returns.ToString("N3"), v.ToString("N3"));
 		}
+
+		/// <summary>
+		/// Train and test with weighted probability
+		/// </summary>
+		/// <param name="set">training data</param>
+		[TestCaseSource(typeof(TrainingSet), "WeightedProbabilityData")]
+		public void WeightedProbabilityTest(TrainingSet set)
+		{
+			Classifier<string, string, TrainingBucket> cf = BuildAndTrain(set);
+			double v = cf.WeightedProbability(set.Word, set.Bucket, cf.Probability);
+			Assert.AreEqual(set.Returns.ToString("N3"), v.ToString("N3"));
+		}
     }
 
 }
