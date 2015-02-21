@@ -13,9 +13,11 @@ namespace Ronin.ML.Classifier
 	/// <typeparam name="F">any type</typeparam>
 	public class ClassifierDataInRAM<F> : IClassifierData<F>
 	{
+		public ClassifierDataInRAM() { }
+
 		public ClassifierDataInRAM(
-			IDictionary<F, FeatureCount> features = null, 
-			IDictionary<string, long> categories = null)
+			IDictionary<F, FeatureCount> features, 
+			IDictionary<string, long> categories)
 		{
 			features.ForEach(p => _fc.AddOrUpdate(p.Key, p.Value, (k, v) => p.Value));
 			categories.ForEach(p => _cc.AddOrUpdate(p.Key, p.Value, (k, v) => p.Value));
@@ -111,6 +113,23 @@ namespace Ronin.ML.Classifier
 		public IEnumerable<string> CategoryNames()
 		{
 			return _cc.Keys;
+		}
+
+		/// <summary>
+		/// Cleanup category data
+		/// </summary>
+		/// <param name="cat">name of category to clean up</param>
+		public void RemoveCategory(string cat)
+		{
+			long val;
+			if (_cc.TryRemove(cat, out val))
+			{
+				F[] features = (from p in _fc
+								where p.Value.ContainsKey(cat)
+								select p.Key).ToArray();
+				FeatureCount fc;
+				features.ForEach(f => _fc.TryRemove(f, out fc));
+			}
 		}
 
 		#endregion

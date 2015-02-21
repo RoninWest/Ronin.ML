@@ -45,5 +45,11 @@ namespace Ronin.ML.Classifier
 		/// Total number of items
 		/// </summary>
 		long TotalCategoryItems();
+
+		/// <summary>
+		/// Cleanup category data
+		/// </summary>
+		/// <param name="cat">name of category to clean up</param>
+		void RemoveCategory(string cat);
 	}
 }

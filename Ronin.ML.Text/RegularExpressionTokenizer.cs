@@ -55,21 +55,37 @@ namespace Ronin.ML.Text
 
 			if (_exclusion)
 			{
-                for (int i = 1; i < mc.Count; i++)
+                for (int i = 0; i < mc.Count; i++)
 				{
-					Match last = mc[i - 1];
 					Match cur = mc[i];
+					Match last;
+					int start, len;
 
-					int start = last.Index + last.Length;
-					int len = cur.Index - start;
-					if (len <= 0)
-						continue;
+					if (i == 0)
+					{
+						last = null;
+						start = 0;
+						len = cur.Index;
+					}
+					else
+					{
+						last = mc[i - 1];
+						start = last.Index + last.Length;
+						len = cur.Index - start;
+						if (len <= 0)
+							continue;
+					}
 
 					string value = data.Substring(start, len);
-					if (string.IsNullOrEmpty(value))
-						continue;
+					if (!string.IsNullOrEmpty(value))
+						wlist.Add(new WordToken(value, start));
 
-					wlist.Add(new WordToken(value, start));
+					if(i == mc.Count - 1)
+					{
+						start = cur.Index + cur.Length;
+						value = data.Substring(start);
+						wlist.Add(new WordToken(value, start));
+					}
 				}
 			}
 			else

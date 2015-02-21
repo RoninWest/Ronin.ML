@@ -18,6 +18,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ronin.ML.Classifier", "Roni
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ronin", "Ronin\Ronin.csproj", "{02B220C8-CD13-4E25-8BD3-9498E8412A8E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ronin.ML.Classifier.Test", "Ronin.ML.Classifier.Test\Ronin.ML.Classifier.Test.csproj", "{12DCF01D-CB9E-4B05-BE19-C26A6837C145}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,6 +42,10 @@ Global
 		{02B220C8-CD13-4E25-8BD3-9498E8412A8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{02B220C8-CD13-4E25-8BD3-9498E8412A8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{02B220C8-CD13-4E25-8BD3-9498E8412A8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12DCF01D-CB9E-4B05-BE19-C26A6837C145}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12DCF01D-CB9E-4B05-BE19-C26A6837C145}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12DCF01D-CB9E-4B05-BE19-C26A6837C145}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12DCF01D-CB9E-4B05-BE19-C26A6837C145}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
