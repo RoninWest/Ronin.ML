@@ -38,26 +38,41 @@ namespace Ronin.ML.Classifier.Test
 			return from t in tokens select t.Word;
 		}
 
-		/// <summary>
-		/// Train and then test with feature counting
-		/// </summary>
-		/// <param name="data">training data</param>
-		/// <param name="word">word to test for feature count</param>
-		/// <param name="bucket">category to test the word feature against</param>
-		/// <returns>number of times the word feature shows up in the given bucket</returns>
-		[TestCaseSource(typeof(TrainingSet), "Data")]
-		public void TrainAndFeatureCount(TrainingSet set)
+		Classifier<string, string, TrainingBucket> BuildAndTrain(TrainingSet set)
 		{
 			Assert.IsNotNull(set);
 
 			TrainingBucket[] cats = _dataSrc.CategoryKeys().ToArray();
 			cats.ForEach(_dataSrc.RemoveCategory); //cleanup existing names
+			Assert.IsEmpty(_dataSrc.CategoryKeys());
 
 			var cf = new Classifier<string, string, TrainingBucket>(_dataSrc, StringSplit);
 			set.Inputs.ForEach(t => cf.Train(t.Data, t.Bucket));
+			return cf;
+		}
 
+		/// <summary>
+		/// Train and then test with feature counting
+		/// </summary>
+		/// <param name="set">training data</param>
+		[TestCaseSource(typeof(TrainingSet), "FeatureData")]
+		public void FeatureCountTest(TrainingSet set)
+		{
+			Classifier<string, string, TrainingBucket> cf = BuildAndTrain(set);
 			double v = _dataSrc.CountFeature(set.Word, set.Bucket);
-			Assert.AreEqual(set.Returns, v);
+			Assert.AreEqual(set.Returns.ToString("N3"), v.ToString("N3"));
+		}
+
+		/// <summary>
+		/// Train and test with basic probability
+		/// </summary>
+		/// <param name="set">training data</param>
+		[TestCaseSource(typeof(TrainingSet), "BasicProbabilityData")]
+		public void BasicProbabilityTest(TrainingSet set)
+		{
+			Classifier<string, string, TrainingBucket> cf = BuildAndTrain(set);
+			double v = cf.Probability(set.Word, set.Bucket);
+			Assert.AreEqual(set.Returns.ToString("N3"), v.ToString("N3"));
 		}
     }
 
