@@ -12,13 +12,13 @@ namespace Ronin.ML.Classifier
 	/// Use to keep stats for a classifier feature.
 	/// </summary>
 	/// <remarks>Thread safe!</remarks>
-    public class FeatureCount : ConcurrentDictionary<string, long>, IDictionary<string, long>
+    public class FeatureCount<C> : ConcurrentDictionary<C, long>, IDictionary<C, long>
     {
 		/// <summary>
 		/// Add 1 to key value counter
 		/// </summary>
 		/// <returns>return new value</returns>
-		public long Increment(string key, int value = 1)
+		public long Increment(C key, int value = 1)
 		{
 			return this.AddOrUpdate(key, value, (k, v) => v + value);
 		}
@@ -26,7 +26,7 @@ namespace Ronin.ML.Classifier
 		/// <summary>
 		/// Works in the same way as forced Add.  If key exists, force new value.
 		/// </summary>
-		public void Add(string key, long value)
+		public void Add(C key, long value)
 		{
 			this.AddOrUpdate(key, value, (k, v) => value);
 		}

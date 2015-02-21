@@ -10,24 +10,25 @@ namespace Ronin.ML.Classifier
 	/// <summary>
 	/// Generic in memory data provider for classifier logic
 	/// </summary>
-	/// <typeparam name="F">any type</typeparam>
-	public class ClassifierDataInRAM<F> : IClassifierData<F>
+	/// <typeparam name="F">any type for feature</typeparam>
+	/// <typeparam name="C">any type for category</typeparam>
+	public class ClassifierDataInRAM<F, C> : IClassifierData<F, C>
 	{
 		public ClassifierDataInRAM() { }
 
 		public ClassifierDataInRAM(
-			IDictionary<F, FeatureCount> features, 
-			IDictionary<string, long> categories)
+			IDictionary<F, FeatureCount<C>> features, 
+			IDictionary<C, long> categories)
 		{
 			features.ForEach(p => _fc.AddOrUpdate(p.Key, p.Value, (k, v) => p.Value));
 			categories.ForEach(p => _cc.AddOrUpdate(p.Key, p.Value, (k, v) => p.Value));
 		}
 
-		readonly ConcurrentDictionary<F, FeatureCount> _fc = new ConcurrentDictionary<F, FeatureCount>();
+		readonly ConcurrentDictionary<F, FeatureCount<C>> _fc = new ConcurrentDictionary<F, FeatureCount<C>>();
 		/// <summary>
 		/// Store feature stats
 		/// </summary>
-		public IDictionary<F, FeatureCount> Features
+		public IDictionary<F, FeatureCount<C>> Features
 		{
 			get { return _fc; }
 		}
@@ -38,11 +39,11 @@ namespace Ronin.ML.Classifier
 		/// Increment the count for a feature/category pair
 		/// </summary>
 		/// <param name="feat">feature value</param>
-		/// <param name="cat">category name</param>
-		public void IncrementFeature(F feat, string cat)
+		/// <param name="cat">category value</param>
+		public void IncrementFeature(F feat, C cat)
 		{
 			_fc.AddOrUpdate(feat,
-				f => new FeatureCount { { cat, 1 } },
+				f => new FeatureCount<C> { { cat, 1 } },
 				(f, cv) =>
 				{
 					cv.Increment(cat);
@@ -54,11 +55,11 @@ namespace Ronin.ML.Classifier
 		/// Return the count for a feature/category pair
 		/// </summary>
 		/// <param name="feat">feature value</param>
-		/// <param name="cat">category name</param>
+		/// <param name="cat">category value</param>
 		/// <returns>count value</returns>
-		public long CountFeature(F feat, string cat)
+		public long CountFeature(F feat, C cat)
 		{
-			FeatureCount fc;
+			FeatureCount<C> fc;
 			if (_fc.TryGetValue(feat, out fc) && fc.ContainsKey(cat))
 				return fc[cat];
 
@@ -67,11 +68,11 @@ namespace Ronin.ML.Classifier
 
 		#endregion
 
-		readonly ConcurrentDictionary<string, long> _cc = new ConcurrentDictionary<string, long>();
+		readonly ConcurrentDictionary<C, long> _cc = new ConcurrentDictionary<C, long>();
 		/// <summary>
 		/// Store category stats
 		/// </summary>
-		public IDictionary<string, long> Categories
+		public IDictionary<C, long> Categories
 		{
 			get { return _cc; }
 		}
@@ -81,8 +82,8 @@ namespace Ronin.ML.Classifier
 		/// <summary>
 		/// Increment Category Count
 		/// </summary>
-		/// <param name="cat">category name</param>
-		public void IncrementCategory(string cat)
+		/// <param name="cat">category value</param>
+		public void IncrementCategory(C cat)
 		{
 			_cc.AddOrUpdate(cat, 1, (c, v) => v + 1);
 		}
@@ -90,9 +91,9 @@ namespace Ronin.ML.Classifier
 		/// <summary>
 		/// Count category
 		/// </summary>
-		/// <param name="cat">category name</param>
+		/// <param name="cat">category value</param>
 		/// <returns>current value</returns>
-		public long CountCategory(string cat)
+		public long CountCategory(C cat)
 		{
 			long v = 0;
 			_cc.TryGetValue(cat, out v);
@@ -110,7 +111,7 @@ namespace Ronin.ML.Classifier
 		/// <summary>
 		/// List of all category keys
 		/// </summary>
-		public IEnumerable<string> CategoryNames()
+		public IEnumerable<C> CategoryKeys()
 		{
 			return _cc.Keys;
 		}
@@ -118,8 +119,8 @@ namespace Ronin.ML.Classifier
 		/// <summary>
 		/// Cleanup category data
 		/// </summary>
-		/// <param name="cat">name of category to clean up</param>
-		public void RemoveCategory(string cat)
+		/// <param name="cat">value of category to clean up</param>
+		public void RemoveCategory(C cat)
 		{
 			long val;
 			if (_cc.TryRemove(cat, out val))
@@ -127,7 +128,7 @@ namespace Ronin.ML.Classifier
 				F[] features = (from p in _fc
 								where p.Value.ContainsKey(cat)
 								select p.Key).ToArray();
-				FeatureCount fc;
+				FeatureCount<C> fc;
 				features.ForEach(f => _fc.TryRemove(f, out fc));
 			}
 		}

@@ -12,10 +12,11 @@ namespace Ronin.ML.Classifier
 	/// </summary>
 	/// <typeparam name="T">Item type to train, and test</typeparam>
 	/// <typeparam name="F">Item feature type to compare for classification purpose</typeparam>
+	/// <typeparam name="C">Item category type for bucketing</typeparam>
 	/// <remarks>Thread safe!</remarks>
-	public class Classifier<T, F>
+	public class Classifier<T, F, C>
 	{
-		protected readonly IClassifierData<F> _data;
+		protected readonly IClassifierData<F, C> _data;
 		readonly Func<T, IEnumerable<F>> _getFeatures;
 
 		/// <summary>
@@ -23,7 +24,7 @@ namespace Ronin.ML.Classifier
 		/// </summary>
 		/// <param name="data">Required: data service provider</param>
 		/// <param name="getFeatures">Required: feature extraction method</param>
-		public Classifier(IClassifierData<F> data, Func<T, IEnumerable<F>> getFeatures) 
+		public Classifier(IClassifierData<F, C> data, Func<T, IEnumerable<F>> getFeatures) 
 		{
 			if (data == null)
 				throw new ArgumentNullException("data");
@@ -39,12 +40,12 @@ namespace Ronin.ML.Classifier
 		/// </summary>
 		/// <param name="item">Item to train</param>
 		/// <param name="category">category to classify item as</param>
-		public virtual void Train(T item, string category)
+		public virtual void Train(T item, C category)
 		{
 			if (item == null || item.Equals(default(T)))
 				throw new ArgumentException("item can not be null or default");
-			if (string.IsNullOrEmpty(category))
-				throw new ArgumentException("category can not be null or empty");
+			if (category == null)
+				throw new ArgumentNullException("category can not be null");
 
 			IEnumerable<F> features = _getFeatures(item);
 			bool once = false;
@@ -66,7 +67,7 @@ namespace Ronin.ML.Classifier
 		/// <param name="feature">Feature in question</param>
 		/// <param name="category">Category to test</param>
 		/// <returns>percentage value between 0 and 1. 1 being most likely and 0 being not</returns>
-		public virtual double Probability(F feature, string category)
+		public virtual double Probability(F feature, C category)
 		{
 			long cc = _data.CountCategory(category);
 			if (cc == 0)
@@ -85,21 +86,21 @@ namespace Ronin.ML.Classifier
 		/// <param name="weight">weight of each feature</param>
 		/// <param name="assumedProb">assumed probability for unknowns</param>
 		/// <returns>percentage value between 0 and 1. 1 being most likely and 0 being not</returns>
-		public virtual double WeightedProbability(F feature, string category, 
-			Func<F, string, double> prf, 
+		public virtual double WeightedProbability(F feature, C category, 
+			Func<F, C, double> prf, 
 			double weight = 1, double assumedProb = .5)
 		{
 			if (feature == null || feature.Equals(default(F)))
 				throw new ArgumentException("feature can not be null or default");
-			if (string.IsNullOrEmpty(category))
-				throw new ArgumentException("category can not be null or empty");
+			if (category == null)
+				throw new ArgumentNullException("category can not be null");
 			if (prf == null)
 				throw new ArgumentNullException("prf");
 			if (assumedProb > 1 || assumedProb < 0)
 				throw new ArgumentOutOfRangeException("assumedProb > 1 || assumedProb < 0");
 
 			double basicProb = prf(feature, category);
-			long totals = (from c in _data.CategoryNames()
+			long totals = (from c in _data.CategoryKeys()
 						   select _data.CountFeature(feature, c)).Sum();
 
 			//weighted average

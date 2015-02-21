@@ -45,6 +45,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Training.cs" />
+    <Compile Include="TrainingBucket.cs" />
+    <Compile Include="TrainingSet.cs" />
     <Compile Include="TrainingTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

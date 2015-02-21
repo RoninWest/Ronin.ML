@@ -12,7 +12,7 @@ namespace Ronin.ML.Classifier.Test
 	/// <typeparam name="T">data type as input training</typeparam>
 	public class Training<T>
 	{
-		public Training(string bucket, T data = default(T))
+		public Training(TrainingBucket bucket, T data = default(T))
 		{
 			Bucket = bucket;
 			Data = data;
@@ -23,20 +23,9 @@ namespace Ronin.ML.Classifier.Test
 		/// </summary>
 		public T Data { get; set; }
 
-		string _bucket;
 		/// <summary>
 		/// Bucket to classify the training data as
 		/// </summary>
-		public string Bucket
-		{
-			get { return _bucket; }
-			set
-			{
-				if (string.IsNullOrEmpty(value))
-					throw new ArgumentException("Bucket can not be null or empty!");
-
-				_bucket = value;
-			}
-		}
+		public TrainingBucket Bucket { get; set; }
 	}
 }

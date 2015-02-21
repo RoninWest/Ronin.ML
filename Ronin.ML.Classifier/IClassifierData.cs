@@ -6,40 +6,42 @@ namespace Ronin.ML.Classifier
 	/// <summary>
 	/// Data storage and provider for classifier logic
 	/// </summary>
-	public interface IClassifierData<F>
+	/// <typeparam name="F">any type for feature</typeparam>
+	/// <typeparam name="C">any type for category</typeparam>
+	public interface IClassifierData<F, C>
 	{
 		/// <summary>
 		/// List of all category keys
 		/// </summary>
-		IEnumerable<string> CategoryNames();
+		IEnumerable<C> CategoryKeys();
 
 		/// <summary>
 		/// Count category
 		/// </summary>
-		/// <param name="cat">category name</param>
+		/// <param name="cat">category value</param>
 		/// <returns>current value</returns>
-		long CountCategory(string cat);
+		long CountCategory(C cat);
 
 		/// <summary>
 		/// Return the count for a feature/category pair
 		/// </summary>
 		/// <param name="feat">feature value</param>
-		/// <param name="cat">category name</param>
+		/// <param name="cat">category value</param>
 		/// <returns>count value</returns>
-		long CountFeature(F feat, string cat);
+		long CountFeature(F feat, C cat);
 
 		/// <summary>
 		/// Increment Category Count
 		/// </summary>
-		/// <param name="cat">category name</param>
-		void IncrementCategory(string cat);
+		/// <param name="cat">category value</param>
+		void IncrementCategory(C cat);
 
 		/// <summary>
 		/// Increment the count for a feature/category pair
 		/// </summary>
 		/// <param name="feat">feature value</param>
-		/// <param name="cat">category name</param>
-		void IncrementFeature(F feat, string cat);
+		/// <param name="cat">category value</param>
+		void IncrementFeature(F feat, C cat);
 
 		/// <summary>
 		/// Total number of items
@@ -49,7 +51,7 @@ namespace Ronin.ML.Classifier
 		/// <summary>
 		/// Cleanup category data
 		/// </summary>
-		/// <param name="cat">name of category to clean up</param>
-		void RemoveCategory(string cat);
+		/// <param name="cat">value of category to clean up</param>
+		void RemoveCategory(C cat);
 	}
 }
