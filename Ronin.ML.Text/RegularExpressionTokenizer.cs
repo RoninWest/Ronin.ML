@@ -84,7 +84,8 @@ namespace Ronin.ML.Text
 					{
 						start = cur.Index + cur.Length;
 						value = data.Substring(start);
-						wlist.Add(new WordToken(value, start));
+						if(!string.IsNullOrEmpty(value))
+							wlist.Add(new WordToken(value, start));
 					}
 				}
 			}
