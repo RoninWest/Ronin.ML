@@ -44,9 +44,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BayesianWordClassifier.cs" />
+    <Compile Include="ClassifierTest.cs" />
     <Compile Include="DummyClassifier.cs" />
     <Compile Include="Training.cs" />
-    <Compile Include="TrainingBucket.cs" />
+    <Compile Include="Bucket.cs" />
     <Compile Include="TrainingSet.cs" />
     <Compile Include="TrainingTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

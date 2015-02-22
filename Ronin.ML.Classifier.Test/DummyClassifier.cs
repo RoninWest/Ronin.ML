@@ -9,17 +9,17 @@ using Ronin.ML.Text;
 
 namespace Ronin.ML.Classifier.Test
 {
-	class DummyClassifier : AbstractClassifier<string, string, TrainingBucket>
+	class DummyClassifier : AbstractClassifier<string, string, Bucket>
 	{
 		public DummyClassifier(
-			IClassifierData<string, TrainingBucket> data,
+			IClassifierData<string, Bucket> data,
 			Func<string, IEnumerable<string>> getFeatures)
 			: base(data, getFeatures)
 		{
 
 		}
 
-		public override double ItemProbability(string document, TrainingBucket cat)
+		public override double ItemProbability(string document, Bucket cat)
 		{
 			throw new NotImplementedException();
 		}

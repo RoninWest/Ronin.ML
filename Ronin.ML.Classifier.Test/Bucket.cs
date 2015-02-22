@@ -9,7 +9,7 @@ namespace Ronin.ML.Classifier.Test
 	/// <summary>
 	/// bucket results into these
 	/// </summary>
-	public enum TrainingBucket : int
+	public enum Bucket : int
 	{
 		GOOD = 0,
 		BAD = 1,

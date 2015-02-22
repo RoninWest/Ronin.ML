@@ -12,29 +12,41 @@ namespace Ronin.ML.Classifier.Test
 	/// </summary>
 	public class TrainingSet
 	{
-		public TrainingSet(IEnumerable<Training<string>> inputs, string word, TrainingBucket bucket, double returns = 0)
+		public TrainingSet(IEnumerable<Training<string>> trainingData, string testData, Bucket bucket, double returns = 0)
 		{
-			Assert.IsNotEmpty(Inputs = inputs);
-			Word = word;
-			Bucket = bucket;
-			Returns = returns;
+			Assert.IsNotEmpty(TrainingData = trainingData);
+			TestData = testData;
+			Category = bucket;
+			TestResult = returns;
 		}
 
-		public string Word { get; set; }
+		/// <summary>
+		/// Test input once training is completed
+		/// </summary>
+		public string TestData { get; set; }
 
-		public TrainingBucket Bucket { get; set; }
+		/// <summary>
+		/// Category to bucket training data in and to use for testing of expected result
+		/// </summary>
+		public Bucket Category { get; set; }
 
-		public IEnumerable<Training<string>> Inputs
+		/// <summary>
+		/// Use this data for classifier training
+		/// </summary>
+		public IEnumerable<Training<string>> TrainingData
 		{
 			get;
 			set;
 		}
 
-		public double Returns { get; set; }
+		/// <summary>
+		/// Expected test result
+		/// </summary>
+		public double TestResult { get; set; }
 
 		public override string ToString()
 		{
-			return string.Format("...,'{0}','{1}',{2}", Word, Bucket, Returns);
+			return string.Format("...,'{0}','{1}',{2}", TestData, Category, TestResult);
 		}
 
 		/// <summary>
@@ -46,35 +58,35 @@ namespace Ronin.ML.Classifier.Test
 			{
 				var inputs = new[]
 				{ 
-					new Training<string>(TrainingBucket.GOOD, "the quick brown fox jumps over the lazy dog"),
-					new Training<string>(TrainingBucket.BAD, "make quick money in the online casino"),
+					new Training<string>(Bucket.GOOD, "the quick brown fox jumps over the lazy dog"),
+					new Training<string>(Bucket.BAD, "make quick money in the online casino"),
 
-					new Training<string>(TrainingBucket.GOOD, "no body owns the water"),
-					new Training<string>(TrainingBucket.GOOD, "the white rabbit jumps fences"),
-					new Training<string>(TrainingBucket.BAD, "buy pharmaceuticals online now"),
+					new Training<string>(Bucket.GOOD, "no body owns the water"),
+					new Training<string>(Bucket.GOOD, "the white rabbit jumps fences"),
+					new Training<string>(Bucket.BAD, "buy pharmaceuticals online now"),
 				};
-				yield return new TrainingSet(inputs, "quick", TrainingBucket.GOOD, 1d);
-				yield return new TrainingSet(inputs, "quick", TrainingBucket.BAD, 1d);
-				yield return new TrainingSet(inputs, "fox", TrainingBucket.GOOD, 1d);
-				yield return new TrainingSet(inputs, "fox", TrainingBucket.BAD, 0d);
-				yield return new TrainingSet(inputs, "dog", TrainingBucket.GOOD, 1d);
-				yield return new TrainingSet(inputs, "dog", TrainingBucket.BAD, 0d);
-				yield return new TrainingSet(inputs, "rabbit", TrainingBucket.GOOD, 1d);
-				yield return new TrainingSet(inputs, "rabbit", TrainingBucket.BAD, 0d);
-				yield return new TrainingSet(inputs, "jumps", TrainingBucket.GOOD, 2d);
-				yield return new TrainingSet(inputs, "jumps", TrainingBucket.BAD, 0d);
-				yield return new TrainingSet(inputs, "money", TrainingBucket.GOOD, 0d);
-				yield return new TrainingSet(inputs, "money", TrainingBucket.BAD, 1d);
-				yield return new TrainingSet(inputs, "casino", TrainingBucket.GOOD, 0d);
-				yield return new TrainingSet(inputs, "casino", TrainingBucket.BAD, 1d);
-				yield return new TrainingSet(inputs, "online", TrainingBucket.BAD, 2d);
-				yield return new TrainingSet(inputs, "make", TrainingBucket.BAD, 1d);
-				yield return new TrainingSet(inputs, "buy", TrainingBucket.BAD, 1d);
+				yield return new TrainingSet(inputs, "quick", Bucket.GOOD, 1d);
+				yield return new TrainingSet(inputs, "quick", Bucket.BAD, 1d);
+				yield return new TrainingSet(inputs, "fox", Bucket.GOOD, 1d);
+				yield return new TrainingSet(inputs, "fox", Bucket.BAD, 0d);
+				yield return new TrainingSet(inputs, "dog", Bucket.GOOD, 1d);
+				yield return new TrainingSet(inputs, "dog", Bucket.BAD, 0d);
+				yield return new TrainingSet(inputs, "rabbit", Bucket.GOOD, 1d);
+				yield return new TrainingSet(inputs, "rabbit", Bucket.BAD, 0d);
+				yield return new TrainingSet(inputs, "jumps", Bucket.GOOD, 2d);
+				yield return new TrainingSet(inputs, "jumps", Bucket.BAD, 0d);
+				yield return new TrainingSet(inputs, "money", Bucket.GOOD, 0d);
+				yield return new TrainingSet(inputs, "money", Bucket.BAD, 1d);
+				yield return new TrainingSet(inputs, "casino", Bucket.GOOD, 0d);
+				yield return new TrainingSet(inputs, "casino", Bucket.BAD, 1d);
+				yield return new TrainingSet(inputs, "online", Bucket.BAD, 2d);
+				yield return new TrainingSet(inputs, "make", Bucket.BAD, 1d);
+				yield return new TrainingSet(inputs, "buy", Bucket.BAD, 1d);
 
-				yield return new TrainingSet(inputs, "chicken", TrainingBucket.BAD, 0d);
-				yield return new TrainingSet(inputs, "chicken", TrainingBucket.GOOD, 0d);
-				yield return new TrainingSet(inputs, string.Empty, TrainingBucket.GOOD, 0d);
-				yield return new TrainingSet(inputs, string.Empty, TrainingBucket.BAD, 0d);
+				yield return new TrainingSet(inputs, "chicken", Bucket.BAD, 0d);
+				yield return new TrainingSet(inputs, "chicken", Bucket.GOOD, 0d);
+				yield return new TrainingSet(inputs, string.Empty, Bucket.GOOD, 0d);
+				yield return new TrainingSet(inputs, string.Empty, Bucket.BAD, 0d);
 			}
 		}
 
@@ -87,27 +99,27 @@ namespace Ronin.ML.Classifier.Test
 			{
 				var inputs = new[]
 				{ 
-					new Training<string>(TrainingBucket.GOOD, "the quick brown fox jumps over the lazy dog"),
-					new Training<string>(TrainingBucket.BAD, "make quick money in the online casino"),
-					new Training<string>(TrainingBucket.GOOD, "the fox in the sox"),
-					new Training<string>(TrainingBucket.GOOD, "no body owns the water"),
-					new Training<string>(TrainingBucket.GOOD, "the white rabbit jumps fences"),
-					new Training<string>(TrainingBucket.BAD, "buy pharmaceuticals online now"),
+					new Training<string>(Bucket.GOOD, "the quick brown fox jumps over the lazy dog"),
+					new Training<string>(Bucket.BAD, "make quick money in the online casino"),
+					new Training<string>(Bucket.GOOD, "the fox in the sox"),
+					new Training<string>(Bucket.GOOD, "no body owns the water"),
+					new Training<string>(Bucket.GOOD, "the white rabbit jumps fences"),
+					new Training<string>(Bucket.BAD, "buy pharmaceuticals online now"),
 				};
-				yield return new TrainingSet(inputs, "pharmaceuticals", TrainingBucket.GOOD, 0);
-				yield return new TrainingSet(inputs, "pharmaceuticals", TrainingBucket.BAD, .5);
-				yield return new TrainingSet(inputs, "quick", TrainingBucket.GOOD, .25);
-				yield return new TrainingSet(inputs, "quick", TrainingBucket.BAD, .5);
-				yield return new TrainingSet(inputs, "fox", TrainingBucket.GOOD, .5);
-				yield return new TrainingSet(inputs, "fox", TrainingBucket.BAD, 0);
-				yield return new TrainingSet(inputs, "dog", TrainingBucket.GOOD, .25);
-				yield return new TrainingSet(inputs, "dog", TrainingBucket.BAD, 0);
-				yield return new TrainingSet(inputs, "rabbit", TrainingBucket.GOOD, .25);
-				yield return new TrainingSet(inputs, "rabbit", TrainingBucket.BAD, 0);
-				yield return new TrainingSet(inputs, "online", TrainingBucket.GOOD, 0);
-				yield return new TrainingSet(inputs, "online", TrainingBucket.BAD, 1);
-				yield return new TrainingSet(inputs, "chicken", TrainingBucket.GOOD, 0);
-				yield return new TrainingSet(inputs, "chicken", TrainingBucket.BAD, 0);
+				yield return new TrainingSet(inputs, "pharmaceuticals", Bucket.GOOD, 0);
+				yield return new TrainingSet(inputs, "pharmaceuticals", Bucket.BAD, .5);
+				yield return new TrainingSet(inputs, "quick", Bucket.GOOD, .25);
+				yield return new TrainingSet(inputs, "quick", Bucket.BAD, .5);
+				yield return new TrainingSet(inputs, "fox", Bucket.GOOD, .5);
+				yield return new TrainingSet(inputs, "fox", Bucket.BAD, 0);
+				yield return new TrainingSet(inputs, "dog", Bucket.GOOD, .25);
+				yield return new TrainingSet(inputs, "dog", Bucket.BAD, 0);
+				yield return new TrainingSet(inputs, "rabbit", Bucket.GOOD, .25);
+				yield return new TrainingSet(inputs, "rabbit", Bucket.BAD, 0);
+				yield return new TrainingSet(inputs, "online", Bucket.GOOD, 0);
+				yield return new TrainingSet(inputs, "online", Bucket.BAD, 1);
+				yield return new TrainingSet(inputs, "chicken", Bucket.GOOD, 0);
+				yield return new TrainingSet(inputs, "chicken", Bucket.BAD, 0);
 			}
 		}
 
@@ -120,27 +132,50 @@ namespace Ronin.ML.Classifier.Test
 			{
 				var inputs = new[]
 				{ 
-					new Training<string>(TrainingBucket.GOOD, "the quick brown fox jumps over the lazy dog"),
-					new Training<string>(TrainingBucket.BAD, "make quick money in the online casino"),
-					new Training<string>(TrainingBucket.GOOD, "the fox in the sox"),
-					new Training<string>(TrainingBucket.GOOD, "no body owns the water"),
-					new Training<string>(TrainingBucket.GOOD, "the white rabbit jumps fences"),
-					new Training<string>(TrainingBucket.BAD, "buy pharmaceuticals online now"),
+					new Training<string>(Bucket.GOOD, "the quick brown fox jumps over the lazy dog"),
+					new Training<string>(Bucket.BAD, "make quick money in the online casino"),
+					new Training<string>(Bucket.GOOD, "the fox in the sox"),
+					new Training<string>(Bucket.GOOD, "no body owns the water"),
+					new Training<string>(Bucket.GOOD, "the white rabbit jumps fences"),
+					new Training<string>(Bucket.BAD, "buy pharmaceuticals online now"),
 				};
-				yield return new TrainingSet(inputs, "pharmaceuticals", TrainingBucket.GOOD, .25);
-				yield return new TrainingSet(inputs, "pharmaceuticals", TrainingBucket.BAD, .5);
-				yield return new TrainingSet(inputs, "quick", TrainingBucket.GOOD, .333);
-				yield return new TrainingSet(inputs, "quick", TrainingBucket.BAD, .5);
-				yield return new TrainingSet(inputs, "fox", TrainingBucket.GOOD, .5);
-				yield return new TrainingSet(inputs, "fox", TrainingBucket.BAD, .167);
-				yield return new TrainingSet(inputs, "dog", TrainingBucket.GOOD, .375);
-				yield return new TrainingSet(inputs, "dog", TrainingBucket.BAD, .25);
-				yield return new TrainingSet(inputs, "rabbit", TrainingBucket.GOOD, .375);
-				yield return new TrainingSet(inputs, "rabbit", TrainingBucket.BAD, .25);
-				yield return new TrainingSet(inputs, "online", TrainingBucket.GOOD, .167);
-				yield return new TrainingSet(inputs, "online", TrainingBucket.BAD, .833);
-				yield return new TrainingSet(inputs, "chicken", TrainingBucket.GOOD, .5);
-				yield return new TrainingSet(inputs, "chicken", TrainingBucket.BAD, .5);
+				yield return new TrainingSet(inputs, "pharmaceuticals", Bucket.GOOD, .25);
+				yield return new TrainingSet(inputs, "pharmaceuticals", Bucket.BAD, .5);
+				yield return new TrainingSet(inputs, "quick", Bucket.GOOD, .333);
+				yield return new TrainingSet(inputs, "quick", Bucket.BAD, .5);
+				yield return new TrainingSet(inputs, "fox", Bucket.GOOD, .5);
+				yield return new TrainingSet(inputs, "fox", Bucket.BAD, .167);
+				yield return new TrainingSet(inputs, "dog", Bucket.GOOD, .375);
+				yield return new TrainingSet(inputs, "dog", Bucket.BAD, .25);
+				yield return new TrainingSet(inputs, "rabbit", Bucket.GOOD, .375);
+				yield return new TrainingSet(inputs, "rabbit", Bucket.BAD, .25);
+				yield return new TrainingSet(inputs, "online", Bucket.GOOD, .167);
+				yield return new TrainingSet(inputs, "online", Bucket.BAD, .833);
+				yield return new TrainingSet(inputs, "chicken", Bucket.GOOD, .5);
+				yield return new TrainingSet(inputs, "chicken", Bucket.BAD, .5);
+			}
+		}
+
+		/// <summary>
+		/// Text training data for Bayesian classifier
+		/// </summary>
+		public static IEnumerable<TrainingSet> BayesianClassifierData
+		{
+			get
+			{
+				var inputs = new[]
+				{ 
+					new Training<string>(Bucket.GOOD, "the quick brown fox jumps over the lazy dog"),
+					new Training<string>(Bucket.BAD, "make quick money in the online casino"),
+					new Training<string>(Bucket.GOOD, "the fox in the sox"),
+					new Training<string>(Bucket.GOOD, "no body owns the water"),
+					new Training<string>(Bucket.GOOD, "the white rabbit jumps fences"),
+					new Training<string>(Bucket.BAD, "buy pharmaceuticals online now"),
+				};
+				yield return new TrainingSet(inputs, "buy online pharmaceuticals", Bucket.GOOD, .007);
+				yield return new TrainingSet(inputs, "buy online pharmaceuticals", Bucket.BAD, .069);
+				yield return new TrainingSet(inputs, "the rabbit jumps over the fox quick", Bucket.GOOD, .021);
+				yield return new TrainingSet(inputs, "the rabbit jumps over the fox quick", Bucket.BAD, .001);
 			}
 		}
 	}

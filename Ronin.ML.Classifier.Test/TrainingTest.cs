@@ -12,18 +12,18 @@ namespace Ronin.ML.Classifier.Test
 	/// <summary>
 	/// Training tests
 	/// </summary>
-	[TestFixture(typeof(ClassifierDataInRAM<string, TrainingBucket>), typeof(WhiteSpaceTokenizer))]
-	[TestFixture(typeof(ClassifierDataInRAM<string, TrainingBucket>), typeof(NoneWordTokenizer))]
+	[TestFixture(typeof(ClassifierDataInRAM<string, Bucket>), typeof(WhiteSpaceTokenizer))]
+	[TestFixture(typeof(ClassifierDataInRAM<string, Bucket>), typeof(NoneWordTokenizer))]
     public class TrainingTest
     {
-		readonly IClassifierData<string, TrainingBucket> _dataSrc;
+		readonly IClassifierData<string, Bucket> _dataSrc;
 		readonly IStringTokenizer _tokenizer;
 
 		public TrainingTest(Type dataLogic, Type tokenizer)
 		{
 			//init data src
 			Assert.IsNotNull(dataLogic);
-			_dataSrc = Activator.CreateInstance(dataLogic) as IClassifierData<string, TrainingBucket>;
+			_dataSrc = Activator.CreateInstance(dataLogic) as IClassifierData<string, Bucket>;
 			Assert.IsNotNull(_dataSrc);
 
 			//init tokenizer
@@ -42,12 +42,12 @@ namespace Ronin.ML.Classifier.Test
 		{
 			Assert.IsNotNull(set);
 
-			TrainingBucket[] cats = _dataSrc.CategoryKeys().ToArray();
+			Bucket[] cats = _dataSrc.CategoryKeys().ToArray();
 			cats.ForEach(_dataSrc.RemoveCategory); //cleanup existing names
 			Assert.IsEmpty(_dataSrc.CategoryKeys());
 
 			var cf = new DummyClassifier(_dataSrc, StringSplit);
-			set.Inputs.ForEach(t => cf.ItemClassify(t.Data, t.Bucket));
+			set.TrainingData.ForEach(t => cf.ItemClassify(t.Data, t.Bucket));
 			return cf;
 		}
 
@@ -59,8 +59,8 @@ namespace Ronin.ML.Classifier.Test
 		public void FeatureCountTest(TrainingSet set)
 		{
 			DummyClassifier cf = BuildAndTrain(set);
-			double v = _dataSrc.CountFeature(set.Word, set.Bucket);
-			Assert.AreEqual(set.Returns.ToString("N3"), v.ToString("N3"));
+			double v = _dataSrc.CountFeature(set.TestData, set.Category);
+			Assert.AreEqual(set.TestResult.ToString("N3"), v.ToString("N3"));
 		}
 
 		/// <summary>
@@ -71,8 +71,8 @@ namespace Ronin.ML.Classifier.Test
 		public void BasicProbabilityTest(TrainingSet set)
 		{
 			DummyClassifier cf = BuildAndTrain(set);
-			double v = cf.FeatureProbability(set.Word, set.Bucket);
-			Assert.AreEqual(set.Returns.ToString("N3"), v.ToString("N3"));
+			double v = cf.FeatureProbability(set.TestData, set.Category);
+			Assert.AreEqual(set.TestResult.ToString("N3"), v.ToString("N3"));
 		}
 
 		/// <summary>
@@ -83,8 +83,8 @@ namespace Ronin.ML.Classifier.Test
 		public void WeightedProbabilityTest(TrainingSet set)
 		{
 			DummyClassifier cf = BuildAndTrain(set);
-			double v = cf.FeatureWeightedProbability(set.Word, set.Bucket, cf.FeatureProbability);
-			Assert.AreEqual(set.Returns.ToString("N3"), v.ToString("N3"));
+			double v = cf.FeatureWeightedProbability(set.TestData, set.Category, cf.FeatureProbability);
+			Assert.AreEqual(set.TestResult.ToString("N3"), v.ToString("N3"));
 		}
     }
 
