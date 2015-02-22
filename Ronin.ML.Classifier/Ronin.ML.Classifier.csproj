@@ -40,9 +40,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classifier.cs" />
+    <Compile Include="AbstractClassifier.cs" />
     <Compile Include="ClassifierDataInRam.cs" />
     <Compile Include="FeatureCount.cs" />
+    <Compile Include="IClassifier.cs" />
     <Compile Include="IClassifierData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

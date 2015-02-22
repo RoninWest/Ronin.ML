@@ -14,17 +14,17 @@ namespace Ronin.ML.Classifier
 	/// <typeparam name="F">Item feature type to compare for classification purpose</typeparam>
 	/// <typeparam name="C">Item category type for bucketing</typeparam>
 	/// <remarks>Thread safe!</remarks>
-	public class Classifier<T, F, C>
+	public abstract class AbstractClassifier<T, F, C> : IClassifier<T, C>
 	{
 		protected readonly IClassifierData<F, C> _data;
-		readonly Func<T, IEnumerable<F>> _getFeatures;
+		protected readonly Func<T, IEnumerable<F>> _getFeatures;
 
 		/// <summary>
 		/// CTOR
 		/// </summary>
 		/// <param name="data">Required: data service provider</param>
 		/// <param name="getFeatures">Required: feature extraction method</param>
-		public Classifier(IClassifierData<F, C> data, Func<T, IEnumerable<F>> getFeatures) 
+		public AbstractClassifier(IClassifierData<F, C> data, Func<T, IEnumerable<F>> getFeatures) 
 		{
 			if (data == null)
 				throw new ArgumentNullException("data");
@@ -36,11 +36,11 @@ namespace Ronin.ML.Classifier
 		}
 
 		/// <summary>
-		/// Train with this item and classify it as such category
+		/// ItemClassify with this item and classify it as such category
 		/// </summary>
 		/// <param name="item">Item to train</param>
 		/// <param name="category">category to classify item as</param>
-		public virtual void Train(T item, C category)
+		public virtual void ItemClassify(T item, C category)
 		{
 			if (item == null || item.Equals(default(T)))
 				throw new ArgumentException("item can not be null or default");
@@ -67,7 +67,7 @@ namespace Ronin.ML.Classifier
 		/// <param name="feature">Feature in question</param>
 		/// <param name="category">Category to test</param>
 		/// <returns>percentage value between 0 and 1. 1 being most likely and 0 being not</returns>
-		public virtual double Probability(F feature, C category)
+		protected internal virtual double FeatureProbability(F feature, C category)
 		{
 			long cc = _data.CountCategory(category);
 			if (cc == 0)
@@ -86,7 +86,7 @@ namespace Ronin.ML.Classifier
 		/// <param name="weight">weight of each feature</param>
 		/// <param name="assumedProb">assumed probability for unknowns</param>
 		/// <returns>percentage value between 0 and 1. 1 being most likely and 0 being not</returns>
-		public virtual double WeightedProbability(F feature, C category, 
+		protected internal virtual double FeatureWeightedProbability(F feature, C category, 
 			Func<F, C, double> prf, 
 			double weight = 1, double assumedProb = .5)
 		{
@@ -106,5 +106,14 @@ namespace Ronin.ML.Classifier
 			//weighted average
 			return ((weight * assumedProb) + (totals * basicProb)) / (weight + totals);
 		}
+
+		/// <summary>
+		/// Calculate the probability of the entire item to see if it belongs in the provided category
+		/// </summary>
+		/// <param name="item">The item to be calculated probability for</param>
+		/// <param name="cat">The category or bucket to check the item against</param>
+		/// <returns>probability score between 0 and 1.  0 being not certain and 1 being absolutely certain.</returns>
+		public abstract double ItemProbability(T item, C cat);
 	}
+
 }
