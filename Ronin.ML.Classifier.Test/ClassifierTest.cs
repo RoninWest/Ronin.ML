@@ -26,8 +26,18 @@ namespace Ronin.ML.Classifier.Test
 			Assert.IsNotEmpty(data.TrainingData);
 			data.TrainingData.ForEach(t => logic.ItemClassify(t.Data, t.Bucket));
 
-			double prob = logic.ItemProbability(data.TestData, data.Category);
-			Assert.AreEqual(data.TestResult.ToString("N3"), prob.ToString("N3"));
+			double goodProb = logic.ItemProbability(data.TestData, Bucket.GOOD);
+			double badProb = logic.ItemProbability(data.TestData, Bucket.BAD);
+			if (data.Category == Bucket.GOOD)
+			{
+				Assert.Greater(goodProb, badProb);
+				Assert.Greater(goodProb / badProb, data.TestResult);
+			}
+			else
+			{
+				Assert.Greater(badProb, goodProb);
+				Assert.Greater(badProb / goodProb, data.TestResult);
+			}
 		}
 	}
 

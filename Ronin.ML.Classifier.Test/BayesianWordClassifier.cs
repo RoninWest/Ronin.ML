@@ -19,7 +19,7 @@ namespace Ronin.ML.Classifier.Test
 		static BayesianWordClassifier()
 		{
 			var tokenizer = new NoneWordTokenizer();
-			var processor = new CaseNormalizer(new StopWordFilter(null));
+			var processor = new CaseNormalizer(new StopWordFilter(new StemNormalizer(new CaseNormalizer(null))));
 			_wi = new WordIndexGenerator(tokenizer, processor);
 		}
 

@@ -172,10 +172,12 @@ namespace Ronin.ML.Classifier.Test
 					new Training<string>(Bucket.GOOD, "the white rabbit jumps fences"),
 					new Training<string>(Bucket.BAD, "buy pharmaceuticals online now"),
 				};
-				yield return new TrainingSet(inputs, "buy online pharmaceuticals", Bucket.GOOD, .007);
-				yield return new TrainingSet(inputs, "buy online pharmaceuticals", Bucket.BAD, .069);
-				yield return new TrainingSet(inputs, "the rabbit jumps over the fox quick", Bucket.GOOD, .021);
-				yield return new TrainingSet(inputs, "the rabbit jumps over the fox quick", Bucket.BAD, .001);
+				yield return new TrainingSet(inputs, "buying online pharmaceutical quickly", Bucket.BAD, 10);
+				yield return new TrainingSet(inputs, "buy online pharmaceuticals", Bucket.BAD, 10);
+				yield return new TrainingSet(inputs, "the rabbit jumps over the fox quick", Bucket.GOOD, 20);
+				yield return new TrainingSet(inputs, "jumping rabbits quickly over takes the brown fox", Bucket.GOOD, 20);
+				yield return new TrainingSet(inputs, "making quick money by going to online casinos", Bucket.BAD, 10);
+				yield return new TrainingSet(inputs, "brown fox buys online pharmaceutical then quickly makes money", Bucket.BAD, 4);
 			}
 		}
 	}
