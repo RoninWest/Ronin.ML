@@ -36,11 +36,11 @@ namespace Ronin.ML.Classifier
 		}
 
 		/// <summary>
-		/// ItemClassify with this item and classify it as such category
+		/// Teach the classifier with this item and classify it as such category
 		/// </summary>
 		/// <param name="item">Item to train</param>
 		/// <param name="category">category to classify item as</param>
-		public virtual void ItemClassify(T item, C category)
+		public virtual void ItemTrain(T item, C category)
 		{
 			if (item == null || item.Equals(default(T)))
 				throw new ArgumentException("item can not be null or default");
@@ -114,6 +114,14 @@ namespace Ronin.ML.Classifier
 		/// <param name="cat">The category or bucket to check the item against</param>
 		/// <returns>probability score between 0 and 1.  0 being not certain and 1 being absolutely certain.</returns>
 		public abstract double ItemProbability(T item, C cat);
+
+		/// <summary>
+		/// Attempts to categorize an item into a specific bucket
+		/// </summary>
+		/// <param name="item">The item to place into a bucket</param>
+		/// <param name="defaultCategory">The default bucket if none can be identified</param>
+		/// <returns>The result of the categorization attempt with bucket and weighted score</returns>
+		public abstract Classification<C> ItemClassify(T item, C defaultCategory = default(C));
 	}
 
 }

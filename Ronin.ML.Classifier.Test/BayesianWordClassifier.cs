@@ -23,10 +23,17 @@ namespace Ronin.ML.Classifier.Test
 			_wi = new WordIndexGenerator(tokenizer, processor);
 		}
 
-		public BayesianWordClassifier()
-			: base(new ClassifierDataInRAM<string, Bucket>(), s => _wi.Process(s).Keys.ToArray())
+		public BayesianWordClassifier() : base(
+			new ClassifierDataInRAM<string, Bucket>(), 
+			s => _wi.Process(s).Keys.ToArray(),
+			b => (int)b + 2)
 		{
 
+		}
+
+		public override Classification<Bucket> ItemClassify(string item, Bucket defaultCategory = default(Bucket))
+		{
+			return base.ItemClassify(item, defaultCategory);
 		}
 	}
 }

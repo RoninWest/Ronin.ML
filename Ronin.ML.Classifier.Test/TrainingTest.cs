@@ -47,12 +47,12 @@ namespace Ronin.ML.Classifier.Test
 			Assert.IsEmpty(_dataSrc.CategoryKeys());
 
 			var cf = new DummyClassifier(_dataSrc, StringSplit);
-			set.TrainingData.ForEach(t => cf.ItemClassify(t.Data, t.Bucket));
+			set.TrainingData.ForEach(t => cf.ItemTrain(t.Data, t.Bucket));
 			return cf;
 		}
 
 		/// <summary>
-		/// ItemClassify and then test with feature counting
+		/// ItemTrain and then test with feature counting
 		/// </summary>
 		/// <param name="set">training data</param>
 		[TestCaseSource(typeof(TrainingSet), "FeatureData")]
@@ -64,7 +64,7 @@ namespace Ronin.ML.Classifier.Test
 		}
 
 		/// <summary>
-		/// ItemClassify and test with basic probability
+		/// ItemTrain and test with basic probability
 		/// </summary>
 		/// <param name="set">training data</param>
 		[TestCaseSource(typeof(TrainingSet), "BasicProbabilityData")]
@@ -76,7 +76,7 @@ namespace Ronin.ML.Classifier.Test
 		}
 
 		/// <summary>
-		/// ItemClassify and test with weighted probability
+		/// ItemTrain and test with weighted probability
 		/// </summary>
 		/// <param name="set">training data</param>
 		[TestCaseSource(typeof(TrainingSet), "WeightedProbabilityData")]

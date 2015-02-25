@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="AbstractClassifier.cs" />
     <Compile Include="BayesianClassifier.cs" />
+    <Compile Include="Classification.cs" />
     <Compile Include="ClassifierDataInRam.cs" />
     <Compile Include="FeatureCount.cs" />
     <Compile Include="IClassifier.cs" />

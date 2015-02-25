@@ -22,6 +22,14 @@ namespace Ronin.ML.Classifier
 		/// </summary>
 		/// <param name="item">Item to train</param>
 		/// <param name="category">category to classify item as</param>
-		void ItemClassify(T item, C category);
+		void ItemTrain(T item, C category);
+
+		/// <summary>
+		/// Attempts to categorize an item into a specific bucket
+		/// </summary>
+		/// <param name="item">The item to place into a bucket</param>
+		/// <param name="defaultCategory">The default bucket if none can be identified</param>
+		/// <returns>The result of the categorization attempt with bucket and weighted score</returns>
+		Classification<C> ItemClassify(T item, C defaultCategory = default(C));
 	}
 }

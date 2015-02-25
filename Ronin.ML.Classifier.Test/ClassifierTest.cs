@@ -24,7 +24,7 @@ namespace Ronin.ML.Classifier.Test
 			var logic = new Cf();
 
 			Assert.IsNotEmpty(data.TrainingData);
-			data.TrainingData.ForEach(t => logic.ItemClassify(t.Data, t.Bucket));
+			data.TrainingData.ForEach(t => logic.ItemTrain(t.Data, t.Bucket));
 
 			double goodProb = logic.ItemProbability(data.TestData, Bucket.GOOD);
 			double badProb = logic.ItemProbability(data.TestData, Bucket.BAD);

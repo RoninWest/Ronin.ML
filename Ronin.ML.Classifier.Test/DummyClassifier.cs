@@ -23,5 +23,10 @@ namespace Ronin.ML.Classifier.Test
 		{
 			throw new NotImplementedException();
 		}
+
+		public override Classification<Bucket> ItemClassify(string item, Bucket defaultCategory = default(Bucket))
+		{
+			throw new NotImplementedException();
+		}
 	}
 }
