@@ -4,8 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ronin.ML.Text
+namespace Ronin
 {
+	/// <summary>
+	/// Common extensions
+	/// </summary>
 	public static class Extensions
 	{
 		/// <summary>

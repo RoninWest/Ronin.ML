@@ -17,7 +17,7 @@ namespace Ronin.ML.Text
 		/// <summary>
 		/// Instantiate with language
 		/// </summary>
-		public StopWordFilter(IWordProcessor processor, TextLanguage lang)
+		public StopWordFilter(IWordProcessor processor, TextLanguage lang = TextLanguage.Default)
 			: base(processor, new WhiteSpaceTokenizer(), GetLanguageFiles(lang))
 		{
 		}
