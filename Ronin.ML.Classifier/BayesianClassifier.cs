@@ -9,6 +9,9 @@ namespace Ronin.ML.Classifier
 	/// <summary>
 	/// Naive Bayesian Classifier
 	/// </summary>
+	/// <typeparam name="T">Item type</typeparam>
+	/// <typeparam name="F">Feature type</typeparam>
+	/// <typeparam name="C">Category type</typeparam>
 	public class BayesianClassifier<T, F, C> : AbstractClassifier<T, F, C>
 	{
 		readonly Func<C, double> _getThreshold;

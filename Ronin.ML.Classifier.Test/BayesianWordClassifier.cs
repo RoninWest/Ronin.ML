@@ -23,10 +23,23 @@ namespace Ronin.ML.Classifier.Test
 			_wi = new WordIndexGenerator(tokenizer, processor);
 		}
 
-		public BayesianWordClassifier() : base(
-			new ClassifierDataInRAM<string, TestBucket>(), 
-			s => _wi.Process(s).Keys.ToArray(),
-			b => (int)b + 2)
+		public BayesianWordClassifier()
+			: base(
+				new ClassifierDataInRAM<string, TestBucket>(),
+				s => _wi.Process(s).Keys.ToArray(),
+				b =>
+				{
+					switch(b)
+					{
+						case TestBucket.GOOD:
+							return 2;
+						case TestBucket.BAD:
+							return 4;
+						case TestBucket.UNKNOWN:
+						default:
+							return 0;
+					}
+				})
 		{
 
 		}
