@@ -14,7 +14,7 @@ namespace Ronin.ML.Classifier
 	/// <typeparam name="C">Category type</typeparam>
 	public class BayesianClassifier<T, F, C> : AbstractClassifier<T, F, C>
 	{
-		readonly Func<C, double> _getThreshold;
+		protected readonly Func<C, double> _getThreshold;
 
 		/// <summary>
 		/// CTOR

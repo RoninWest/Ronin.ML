@@ -47,6 +47,7 @@
     <Compile Include="BayesianWordClassifier.cs" />
     <Compile Include="ClassifierTest.cs" />
     <Compile Include="DummyClassifier.cs" />
+    <Compile Include="FisherWordClassifier.cs" />
     <Compile Include="Training.cs" />
     <Compile Include="TestBucket.cs" />
     <Compile Include="TrainingSet.cs" />

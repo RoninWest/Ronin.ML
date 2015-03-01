@@ -12,7 +12,8 @@ namespace Ronin.ML.Classifier.Test
 	/// <summary>
 	/// Whole Classifier test
 	/// </summary>
-	[TestFixture(TypeArgs = new[] { typeof(BayesianWordClassifier) })]
+	//[TestFixture(typeof(FisherWordClassifier))] //NOTE: this classifier is not working as expected. need to double check syntax for error
+	[TestFixture(typeof(BayesianWordClassifier))]
 	public class ClassifierTest<Cf>
 		where Cf : IClassifier<string, TestBucket>, new()
 	{
