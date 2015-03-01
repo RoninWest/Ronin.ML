@@ -12,7 +12,7 @@ namespace Ronin.ML.Classifier.Test
 	/// <typeparam name="T">data type as input training</typeparam>
 	public class Training<T>
 	{
-		public Training(Bucket bucket, T data = default(T))
+		public Training(TestBucket bucket, T data = default(T))
 		{
 			Bucket = bucket;
 			Data = data;
@@ -26,6 +26,6 @@ namespace Ronin.ML.Classifier.Test
 		/// <summary>
 		/// Category to classify the training data as
 		/// </summary>
-		public Bucket Bucket { get; set; }
+		public TestBucket Bucket { get; set; }
 	}
 }

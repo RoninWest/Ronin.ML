@@ -12,7 +12,7 @@ namespace Ronin.ML.Classifier.Test
 	/// <summary>
 	/// text only test classifier
 	/// </summary>
-	public class BayesianWordClassifier : BayesianClassifier<string, string, Bucket>
+	public class BayesianWordClassifier : BayesianClassifier<string, string, TestBucket>
 	{
 		static readonly WordIndexGenerator _wi;
 
@@ -24,16 +24,11 @@ namespace Ronin.ML.Classifier.Test
 		}
 
 		public BayesianWordClassifier() : base(
-			new ClassifierDataInRAM<string, Bucket>(), 
+			new ClassifierDataInRAM<string, TestBucket>(), 
 			s => _wi.Process(s).Keys.ToArray(),
 			b => (int)b + 2)
 		{
 
-		}
-
-		public override Classification<Bucket> ItemClassify(string item, Bucket defaultCategory = default(Bucket))
-		{
-			return base.ItemClassify(item, defaultCategory);
 		}
 	}
 }

@@ -9,22 +9,22 @@ using Ronin.ML.Text;
 
 namespace Ronin.ML.Classifier.Test
 {
-	class DummyClassifier : AbstractClassifier<string, string, Bucket>
+	class DummyClassifier : AbstractClassifier<string, string, TestBucket>
 	{
 		public DummyClassifier(
-			IClassifierData<string, Bucket> data,
+			IClassifierData<string, TestBucket> data,
 			Func<string, IEnumerable<string>> getFeatures)
 			: base(data, getFeatures)
 		{
 
 		}
 
-		public override double ItemProbability(string document, Bucket cat)
+		public override double ItemProbability(string document, TestBucket cat)
 		{
 			throw new NotImplementedException();
 		}
 
-		public override Classification<Bucket> ItemClassify(string item, Bucket defaultCategory = default(Bucket))
+		public override Classification<TestBucket> ItemClassify(string item, TestBucket defaultCategory = default(TestBucket))
 		{
 			throw new NotImplementedException();
 		}

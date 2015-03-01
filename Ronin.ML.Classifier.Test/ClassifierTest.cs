@@ -14,7 +14,7 @@ namespace Ronin.ML.Classifier.Test
 	/// </summary>
 	[TestFixture(TypeArgs = new[] { typeof(BayesianWordClassifier) })]
 	public class ClassifierTest<Cf>
-		where Cf : IClassifier<string, Bucket>, new()
+		where Cf : IClassifier<string, TestBucket>, new()
 	{
 		[TestCaseSource(typeof(TrainingSet), "BayesianClassifierData")]
 		public void DocumentProbabilityTest(TrainingSet data) 
@@ -26,9 +26,9 @@ namespace Ronin.ML.Classifier.Test
 			Assert.IsNotEmpty(data.TrainingData);
 			data.TrainingData.ForEach(t => logic.ItemTrain(t.Data, t.Bucket));
 
-			double goodProb = logic.ItemProbability(data.TestData, Bucket.GOOD);
-			double badProb = logic.ItemProbability(data.TestData, Bucket.BAD);
-			if (data.Category == Bucket.GOOD)
+			double goodProb = logic.ItemProbability(data.TestData, TestBucket.GOOD);
+			double badProb = logic.ItemProbability(data.TestData, TestBucket.BAD);
+			if (data.Category == TestBucket.GOOD)
 			{
 				Assert.Greater(goodProb, badProb);
 				Assert.Greater(goodProb / badProb, data.TestResult);

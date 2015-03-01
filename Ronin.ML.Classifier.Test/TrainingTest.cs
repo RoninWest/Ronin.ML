@@ -12,18 +12,18 @@ namespace Ronin.ML.Classifier.Test
 	/// <summary>
 	/// Training tests
 	/// </summary>
-	[TestFixture(typeof(ClassifierDataInRAM<string, Bucket>), typeof(WhiteSpaceTokenizer))]
-	[TestFixture(typeof(ClassifierDataInRAM<string, Bucket>), typeof(NoneWordTokenizer))]
+	[TestFixture(typeof(ClassifierDataInRAM<string, TestBucket>), typeof(WhiteSpaceTokenizer))]
+	[TestFixture(typeof(ClassifierDataInRAM<string, TestBucket>), typeof(NoneWordTokenizer))]
     public class TrainingTest
     {
-		readonly IClassifierData<string, Bucket> _dataSrc;
+		readonly IClassifierData<string, TestBucket> _dataSrc;
 		readonly IStringTokenizer _tokenizer;
 
 		public TrainingTest(Type dataLogic, Type tokenizer)
 		{
 			//init data src
 			Assert.IsNotNull(dataLogic);
-			_dataSrc = Activator.CreateInstance(dataLogic) as IClassifierData<string, Bucket>;
+			_dataSrc = Activator.CreateInstance(dataLogic) as IClassifierData<string, TestBucket>;
 			Assert.IsNotNull(_dataSrc);
 
 			//init tokenizer
@@ -42,7 +42,7 @@ namespace Ronin.ML.Classifier.Test
 		{
 			Assert.IsNotNull(set);
 
-			Bucket[] cats = _dataSrc.CategoryKeys().ToArray();
+			TestBucket[] cats = _dataSrc.CategoryKeys().ToArray();
 			cats.ForEach(_dataSrc.RemoveCategory); //cleanup existing names
 			Assert.IsEmpty(_dataSrc.CategoryKeys());
 

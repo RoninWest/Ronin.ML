@@ -48,7 +48,7 @@
     <Compile Include="ClassifierTest.cs" />
     <Compile Include="DummyClassifier.cs" />
     <Compile Include="Training.cs" />
-    <Compile Include="Bucket.cs" />
+    <Compile Include="TestBucket.cs" />
     <Compile Include="TrainingSet.cs" />
     <Compile Include="TrainingTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
