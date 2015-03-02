@@ -12,7 +12,8 @@ namespace Ronin.ML.Classifier.Test
 	/// <summary>
 	/// Whole Classifier test
 	/// </summary>
-	[TestFixture(TypeArgs = new[] { typeof(BayesianWordClassifier) })]
+	[TestFixture(typeof(FisherWordClassifier))]
+	[TestFixture(typeof(BayesianWordClassifier))]
 	public class ClassifierTest<Cf>
 		where Cf : IClassifier<string, TestBucket>, new()
 	{
@@ -29,13 +30,15 @@ namespace Ronin.ML.Classifier.Test
 			if (data.Category == TestBucket.GOOD)
 			{
 				Assert.Greater(goodProb, badProb);
-				Assert.Greater(goodProb / badProb, data.TestResult);
+				Assert.Greater(goodProb * 2, badProb);
 			}
-			else
+			else if (data.Category == TestBucket.BAD)
 			{
 				Assert.Greater(badProb, goodProb);
-				Assert.Greater(badProb / goodProb, data.TestResult);
+				Assert.Greater(badProb * 2, goodProb);
 			}
+			else
+				Assert.AreEqual(TestBucket.UNKNOWN, data.Category);
 		}
 
 		/// <summary>
@@ -59,7 +62,7 @@ namespace Ronin.ML.Classifier.Test
 		{
 			Cf logic = InitAndTrainClassifier(data);
 
-			Classification<TestBucket> r = logic.ItemClassify(data.TestData, TestBucket.GOOD); //reduce false positives
+			Classification<TestBucket> r = logic.ItemClassify(data.TestData, TestBucket.UNKNOWN); //reduce false positives
 			Assert.IsNotNull(r);
 			Assert.AreEqual(data.Category, r.Category);
 			Assert.GreaterOrEqual(r.Probability, (double)1 - (1 / data.TestResult));

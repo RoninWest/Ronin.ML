@@ -12,29 +12,29 @@ namespace Ronin.ML.Classifier.Test
 	/// <summary>
 	/// text only test classifier
 	/// </summary>
-	public class BayesianWordClassifier : BayesianClassifier<string, string, TestBucket>
+	public class FisherWordClassifier : FisherClassifier<string, string, TestBucket>
 	{
 		static readonly WordIndexGenerator _wi;
 
-		static BayesianWordClassifier()
+		static FisherWordClassifier()
 		{
 			var tokenizer = new NoneWordTokenizer();
 			var processor = new CaseNormalizer(new StopWordFilter(new StemNormalizer(new CaseNormalizer(null))));
 			_wi = new WordIndexGenerator(tokenizer, processor);
 		}
 
-		public BayesianWordClassifier()
+		public FisherWordClassifier()
 			: base(
 				new ClassifierDataInRAM<string, TestBucket>(),
 				s => _wi.Process(s).Keys.ToArray(),
 				b =>
 				{
-					switch(b)
+					switch (b)
 					{
 						case TestBucket.GOOD:
-							return 2;
+							return .2;
 						case TestBucket.BAD:
-							return 4;
+							return .1;
 						case TestBucket.UNKNOWN:
 						default:
 							return 0;

@@ -11,7 +11,8 @@ namespace Ronin.ML.Classifier.Test
 	/// </summary>
 	public enum TestBucket : int
 	{
-		GOOD = 0,
-		BAD = 1,
+		UNKNOWN = 0,
+		GOOD = 1,
+		BAD = 2,
 	}
 }
