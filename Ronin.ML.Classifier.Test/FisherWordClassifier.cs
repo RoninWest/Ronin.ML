@@ -32,9 +32,9 @@ namespace Ronin.ML.Classifier.Test
 					switch (b)
 					{
 						case TestBucket.GOOD:
-							return .5;
+							return .2;
 						case TestBucket.BAD:
-							return 1;
+							return .1;
 						case TestBucket.UNKNOWN:
 						default:
 							return 0;

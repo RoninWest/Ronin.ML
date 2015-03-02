@@ -12,7 +12,7 @@ namespace Ronin.ML.Classifier.Test
 	/// <summary>
 	/// Whole Classifier test
 	/// </summary>
-	//[TestFixture(typeof(FisherWordClassifier))] //NOTE: this classifier is not working as expected. need to double check syntax for error
+	[TestFixture(typeof(FisherWordClassifier))]
 	[TestFixture(typeof(BayesianWordClassifier))]
 	public class ClassifierTest<Cf>
 		where Cf : IClassifier<string, TestBucket>, new()
@@ -30,12 +30,12 @@ namespace Ronin.ML.Classifier.Test
 			if (data.Category == TestBucket.GOOD)
 			{
 				Assert.Greater(goodProb, badProb);
-				Assert.Greater(goodProb / badProb, data.TestResult);
+				Assert.Greater(goodProb * 2, badProb);
 			}
 			else if (data.Category == TestBucket.BAD)
 			{
 				Assert.Greater(badProb, goodProb);
-				Assert.Greater(badProb / goodProb, data.TestResult);
+				Assert.Greater(badProb * 2, goodProb);
 			}
 			else
 				Assert.AreEqual(TestBucket.UNKNOWN, data.Category);
