@@ -29,7 +29,7 @@ namespace Ronin.ML.Classifier
 		{
 		}
 
-		static DataFileParam DefaultParams
+		protected static DataFileParam DefaultParams
 		{
 			get
 			{
@@ -40,7 +40,7 @@ namespace Ronin.ML.Classifier
 			}
 		}
 
-		static string AssemblyDirectory
+		protected static string AssemblyDirectory
 		{
 			get
 			{
@@ -126,9 +126,14 @@ namespace Ronin.ML.Classifier
         {
             if (Interlocked.CompareExchange(ref _disposed, 1, 0) == 0)
             {
-                if(_write != null)
-                    Save();
+                DisposeLogic();
             }
+        }
+
+        protected virtual void DisposeLogic()
+        {
+            if (_write != null)
+                Save();
         }
 
 	}

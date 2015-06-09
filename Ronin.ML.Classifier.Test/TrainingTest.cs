@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Reflection;
 using NUnit.Framework;
@@ -12,13 +13,14 @@ namespace Ronin.ML.Classifier.Test
 	/// <summary>
 	/// Training tests
 	/// </summary>
-    //[TestFixture(typeof(ClassifierDataInFile<string, TestBucket>), typeof(WhiteSpaceTokenizer))]
-    //[TestFixture(typeof(ClassifierDataInFile<string, TestBucket>), typeof(NoneWordTokenizer))]
+    [TestFixture(typeof(TestClassifierDataInFile<string, TestBucket>), typeof(WhiteSpaceTokenizer))]
+    [TestFixture(typeof(TestClassifierDataInFile<string, TestBucket>), typeof(NoneWordTokenizer))]
 	[TestFixture(typeof(ClassifierDataInRAM<string, TestBucket>), typeof(WhiteSpaceTokenizer))]
 	[TestFixture(typeof(ClassifierDataInRAM<string, TestBucket>), typeof(NoneWordTokenizer))]
-    public class TrainingTest
+    public class TrainingTest : IDisposable
     {
 		readonly IClassifierData<string, TestBucket> _dataSrc;
+        readonly IDataStorable _ds;
 		readonly IStringTokenizer _tokenizer;
 
 		public TrainingTest(Type dataLogic, Type tokenizer)
@@ -28,11 +30,26 @@ namespace Ronin.ML.Classifier.Test
 			_dataSrc = Activator.CreateInstance(dataLogic) as IClassifierData<string, TestBucket>;
 			Assert.IsNotNull(_dataSrc);
 
+            if (_dataSrc is IDataStorable)
+                _ds = _dataSrc as IDataStorable;
+
 			//init tokenizer
 			Assert.IsNotNull(tokenizer);
 			_tokenizer = Activator.CreateInstance(tokenizer) as IStringTokenizer;
 			Assert.IsNotNull(_tokenizer);
 		}
+
+        ~TrainingTest() { Dispose(); }
+        int _disposed = 0;
+        [TestFixtureTearDown]
+        public void Dispose()
+        {
+            if (Interlocked.CompareExchange(ref _disposed, 1, 0) == 0)
+            {
+                if (_ds != null)
+                    _ds.Dispose();
+            }
+        }
 
 		IEnumerable<string> StringSplit(string s)
 		{
@@ -48,8 +65,28 @@ namespace Ronin.ML.Classifier.Test
 			cats.ForEach(_dataSrc.RemoveCategory); //cleanup existing names
 			Assert.IsEmpty(_dataSrc.CategoryKeys());
 
+            if (_ds != null)
+            {
+                _ds.Save();
+                Assert.IsEmpty(_dataSrc.CategoryKeys());
+
+                _ds.Load();
+                Assert.IsEmpty(_dataSrc.CategoryKeys());
+            }
+
 			var cf = new DummyClassifier(_dataSrc, StringSplit);
 			set.TrainingData.ForEach(t => cf.ItemTrain(t.Data, t.Bucket));
+            
+            if(_ds != null)
+            {
+                TestBucket[] catKeys = _dataSrc.CategoryKeys().ToArray();
+                _ds.Save();
+                CollectionAssert.AreEqual(catKeys, _dataSrc.CategoryKeys());
+
+                _ds.Load();
+                CollectionAssert.AreEqual(catKeys, _dataSrc.CategoryKeys());
+            }
+
 			return cf;
 		}
 
