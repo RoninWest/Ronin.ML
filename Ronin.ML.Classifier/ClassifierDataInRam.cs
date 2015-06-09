@@ -24,11 +24,11 @@ namespace Ronin.ML.Classifier
 			categories.ForEach(p => _cc.AddOrUpdate(p.Key, p.Value, (k, v) => p.Value));
 		}
 
-		readonly ConcurrentDictionary<F, FeatureCount<C>> _fc = new ConcurrentDictionary<F, FeatureCount<C>>();
+		readonly protected ConcurrentDictionary<F, FeatureCount<C>> _fc = new ConcurrentDictionary<F, FeatureCount<C>>();
 		/// <summary>
 		/// Store feature stats
 		/// </summary>
-		public IDictionary<F, FeatureCount<C>> Features
+		public virtual IDictionary<F, FeatureCount<C>> Features
 		{
 			get { return _fc; }
 		}
@@ -68,11 +68,11 @@ namespace Ronin.ML.Classifier
 
 		#endregion
 
-		readonly ConcurrentDictionary<C, long> _cc = new ConcurrentDictionary<C, long>();
+		readonly protected ConcurrentDictionary<C, long> _cc = new ConcurrentDictionary<C, long>();
 		/// <summary>
 		/// Store category stats
 		/// </summary>
-		public IDictionary<C, long> Categories
+		public virtual IDictionary<C, long> Categories
 		{
 			get { return _cc; }
 		}
@@ -83,7 +83,7 @@ namespace Ronin.ML.Classifier
 		/// Increment Category Count
 		/// </summary>
 		/// <param name="cat">category value</param>
-		public void IncrementCategory(C cat)
+		public virtual void IncrementCategory(C cat)
 		{
 			_cc.AddOrUpdate(cat, 1, (c, v) => v + 1);
 		}
@@ -93,7 +93,7 @@ namespace Ronin.ML.Classifier
 		/// </summary>
 		/// <param name="cat">category value</param>
 		/// <returns>current value</returns>
-		public long CountCategory(C cat)
+		public virtual long CountCategory(C cat)
 		{
 			long v = 0;
 			_cc.TryGetValue(cat, out v);
@@ -103,7 +103,7 @@ namespace Ronin.ML.Classifier
 		/// <summary>
 		/// Total number of items
 		/// </summary>
-		public long TotalCategoryItems()
+		public virtual long TotalCategoryItems()
 		{
 			return _cc.Values.Sum();
 		}
@@ -111,7 +111,7 @@ namespace Ronin.ML.Classifier
 		/// <summary>
 		/// List of all category keys
 		/// </summary>
-		public IEnumerable<C> CategoryKeys()
+		public virtual IEnumerable<C> CategoryKeys()
 		{
 			return _cc.Keys;
 		}
@@ -120,7 +120,7 @@ namespace Ronin.ML.Classifier
 		/// Cleanup category data
 		/// </summary>
 		/// <param name="cat">value of category to clean up</param>
-		public void RemoveCategory(C cat)
+		public virtual void RemoveCategory(C cat)
 		{
 			long val;
 			if (_cc.TryRemove(cat, out val))

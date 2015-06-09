@@ -33,6 +33,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -43,11 +44,14 @@
     <Compile Include="AbstractClassifier.cs" />
     <Compile Include="BayesianClassifier.cs" />
     <Compile Include="Classification.cs" />
+    <Compile Include="ClassifierDataInFile.cs" />
     <Compile Include="ClassifierDataInRam.cs" />
+    <Compile Include="DataFileParam.cs" />
     <Compile Include="FeatureCount.cs" />
     <Compile Include="FisherClassifier.cs" />
     <Compile Include="IClassifier.cs" />
     <Compile Include="IClassifierData.cs" />
+    <Compile Include="IDataStorable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

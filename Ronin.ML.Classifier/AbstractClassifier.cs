@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Ronin.ML.Classifier
@@ -14,7 +15,7 @@ namespace Ronin.ML.Classifier
 	/// <typeparam name="F">Item feature type to compare for classification purpose</typeparam>
 	/// <typeparam name="C">Item category type for bucketing</typeparam>
 	/// <remarks>Thread safe!</remarks>
-	public abstract class AbstractClassifier<T, F, C> : IClassifier<T, C>
+	public abstract class AbstractClassifier<T, F, C> : IClassifier<T, C>, IDisposable
 	{
 		protected readonly IClassifierData<F, C> _data;
 		protected readonly Func<T, IEnumerable<F>> _getFeatures;
@@ -34,6 +35,17 @@ namespace Ronin.ML.Classifier
 			_data = data;
 			_getFeatures = getFeatures;
 		}
+
+        ~AbstractClassifier() { Dispose(); }
+        int _disposed = 0;
+        public void Dispose()
+        {
+            if (Interlocked.CompareExchange(ref _disposed, 1, 0) == 0)
+            {
+                if (_data != null && _data is IDisposable)
+                    (_data as IDisposable).Dispose(); //optionally dispose data layer if it can be
+            }
+        }
 
 		/// <summary>
 		/// Teach the classifier with this item and classify it as such category
