@@ -17,6 +17,7 @@ namespace Ronin.ML.Classifier
     {
         readonly IMongoClient _client;
         readonly IMongoDatabase _db;
+        //readonly IMongoCollection<>
 
         public ClassifierDataInMongoDB(MongoUrl url)
         {
