@@ -9,6 +9,7 @@ namespace Ronin.ML.Classifier.Test
 	/// <summary>
 	/// bucket results into these
 	/// </summary>
+    [Serializable]
 	public enum TestBucket : int
 	{
 		UNKNOWN = 0,
