@@ -9,6 +9,7 @@ namespace Ronin.ML.Text
 	/// <summary>
 	/// Split string using provided expression
 	/// </summary>
+    [Serializable]
 	public class RegularExpressionTokenizer : IStringTokenizer
 	{
 		readonly Regex _exp;

@@ -12,6 +12,7 @@ namespace Ronin.ML.Classifier
 	/// Use to keep stats for a classifier feature.
 	/// </summary>
 	/// <remarks>Thread safe!</remarks>
+    [Serializable]
     public class FeatureCount<C> : ConcurrentDictionary<C, long>, IDictionary<C, long>
     {
 		/// <summary>

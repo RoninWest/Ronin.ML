@@ -90,8 +90,8 @@ namespace Ronin.ML.Classifier
         {
             lock (_saveLock)
             {
-                IDictionary<C, long> cats = Deserialize<IDictionary<C, long>>(_read.Categories);
-                IDictionary<F, FeatureCount<C>> feats = Deserialize<IDictionary<F, FeatureCount<C>>>(_read.Features);
+                IDictionary<C, long> cats = Deserialize<IDictionary<C, long>>(ReadDataFile.Categories);
+                IDictionary<F, FeatureCount<C>> feats = Deserialize<IDictionary<F, FeatureCount<C>>>(ReadDataFile.Features);
 
                 cats.ForEach(p => _cc.AddOrUpdate(p.Key, p.Value, (k, v) => v));
                 feats.ForEach(p => _fc.AddOrUpdate(p.Key, p.Value, (k, v) => v));
@@ -110,13 +110,13 @@ namespace Ronin.ML.Classifier
 
         public virtual void Save()
         {
-            if (_write == null)
+            if (WriteDataFile == null)
                 throw new InvalidOperationException("This classifier is read only.  Please provide a valid write DataFileParam at instantiation.");
 
             lock (_saveLock)
             {
-                Serialize(Categories, _write.Categories);
-                Serialize(Features, _write.Features);
+                Serialize(Categories, WriteDataFile.Categories);
+                Serialize(Features, WriteDataFile.Features);
             }
         }
 

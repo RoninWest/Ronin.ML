@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Reflection;
+using System.IO;
 using NUnit.Framework;
 using Ronin.ML.Text;
 
@@ -15,8 +16,8 @@ namespace Ronin.ML.Classifier.Test
 	/// </summary>
     [TestFixture(typeof(TestClassifierDataInFile<string, TestBucket>), typeof(WhiteSpaceTokenizer))]
     [TestFixture(typeof(TestClassifierDataInFile<string, TestBucket>), typeof(NoneWordTokenizer))]
-	[TestFixture(typeof(ClassifierDataInRAM<string, TestBucket>), typeof(WhiteSpaceTokenizer))]
-	[TestFixture(typeof(ClassifierDataInRAM<string, TestBucket>), typeof(NoneWordTokenizer))]
+    [TestFixture(typeof(ClassifierDataInRAM<string, TestBucket>), typeof(WhiteSpaceTokenizer))]
+    [TestFixture(typeof(ClassifierDataInRAM<string, TestBucket>), typeof(NoneWordTokenizer))]
     public class TrainingTest : IDisposable
     {
 		readonly IClassifierData<string, TestBucket> _dataSrc;
@@ -85,6 +86,13 @@ namespace Ronin.ML.Classifier.Test
 
                 _ds.Load();
                 CollectionAssert.AreEqual(catKeys, _dataSrc.CategoryKeys());
+
+                if (_dataSrc is ClassifierDataInFile<string, TestBucket>)
+                {
+                    var df = _dataSrc as ClassifierDataInFile<string, TestBucket>;
+                    Assert.IsTrue(File.Exists(df.ReadDataFile.Categories.FullName));
+                    Assert.IsTrue(File.Exists(df.ReadDataFile.Features.FullName));
+                }
             }
 
 			return cf;

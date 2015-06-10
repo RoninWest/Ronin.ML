@@ -11,9 +11,14 @@ namespace Ronin.ML.Classifier.Test
     public class TestClassifierDataInFile<F, C> : ClassifierDataInFile<F, C>
     {
         public TestClassifierDataInFile()
-            : base(DefaultParams, DefaultParams)
+            : base(DefaultParams, null)
         {
 
+        }
+
+        public override DataFileParam WriteDataFile
+        {
+            get { return base.ReadDataFile; }
         }
 
         protected override void DisposeLogic()
@@ -27,9 +32,10 @@ namespace Ronin.ML.Classifier.Test
         {
             get
             {
+                Guid g = Guid.NewGuid();
                 return new DataFileParam(
-                    Path.Combine(AssemblyDirectory, "features." + Guid.NewGuid() + ".txt"),
-                    Path.Combine(AssemblyDirectory, "categories." + Guid.NewGuid() + ".txt")
+                    Path.Combine(AssemblyDirectory, "features." + g + ".txt"),
+                    Path.Combine(AssemblyDirectory, "categories." + g + ".txt")
                 );
             }
         }
