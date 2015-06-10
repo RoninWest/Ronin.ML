@@ -53,6 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CategoryCollection.cs" />
     <Compile Include="CategoryItem.cs" />
     <Compile Include="ClassifierDataInMongoDB.cs" />
     <Compile Include="FeatureCountItem.cs" />

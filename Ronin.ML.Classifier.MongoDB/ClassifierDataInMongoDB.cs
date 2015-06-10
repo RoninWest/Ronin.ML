@@ -14,6 +14,8 @@ namespace Ronin.ML.Classifier
     /// <typeparam name="F">any type for feature</typeparam>
     /// <typeparam name="C">any type for category</typeparam>
     public class ClassifierDataInMongoDB<F, C> : IClassifierData<F, C>
+        where F : IComparable<F>
+        where C : IComparable<C>
     {
         readonly IMongoClient _client;
         readonly IMongoDatabase _db;
@@ -21,6 +23,9 @@ namespace Ronin.ML.Classifier
 
         public ClassifierDataInMongoDB(MongoUrl url)
         {
+            if (url == null)
+                throw new ArgumentNullException("url");
+
             _client = new MongoClient(url);
 
             string dbName;
