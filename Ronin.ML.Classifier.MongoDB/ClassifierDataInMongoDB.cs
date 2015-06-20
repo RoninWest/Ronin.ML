@@ -14,14 +14,22 @@ namespace Ronin.ML.Classifier
     /// <typeparam name="F">any type for feature</typeparam>
     /// <typeparam name="C">any type for category</typeparam>
     public class ClassifierDataInMongoDB<F, C> : IClassifierData<F, C>
-        where F : IComparable<F>
-        where C : IComparable<C>
-    {
+		//where F : IComparable<F>
+		//where C : IComparable<C>
+		where F : IEquatable<F>
+		where C : IEquatable<C>
+	{
         readonly IMongoClient _client;
         readonly IMongoDatabase _db;
-        //readonly IMongoCollection<>
+		readonly FeatureCollection<F, C> _fc;
+		readonly CategoryCollection<C> _cc;
 
-        public ClassifierDataInMongoDB(MongoUrl url)
+		public ClassifierDataInMongoDB(string urlString)
+			: this(new MongoUrl(urlString))
+		{
+		}
+
+		public ClassifierDataInMongoDB(MongoUrl url, string featureCollection = null, string categoryCollection = null)
         {
             if (url == null)
                 throw new ArgumentNullException("url");
@@ -35,46 +43,45 @@ namespace Ronin.ML.Classifier
                 dbName = url.DatabaseName;
 
             _db = _client.GetDatabase(dbName.ToLower());
-        }
 
-        public ClassifierDataInMongoDB(string urlString)
-            : this(new MongoUrl(urlString))
-        {
+			_fc = new FeatureCollection<F, C>(_db, featureCollection);
+			_cc = new CategoryCollection<C>(_db, categoryCollection);
         }
 
         public IEnumerable<C> CategoryKeys()
         {
-            throw new NotImplementedException();
+			return _cc.CategoryKeys().GetAwaiter().GetResult();
         }
 
         public long CountCategory(C cat)
         {
-            throw new NotImplementedException();
+			return _cc.CountCategory(cat).GetAwaiter().GetResult();
         }
 
         public long CountFeature(F feat, C cat)
         {
-            throw new NotImplementedException();
+			return _fc.CountFeature(feat, cat).GetAwaiter().GetResult();
         }
 
         public void IncrementCategory(C cat)
         {
-            throw new NotImplementedException();
+			_cc.IncrementCategory(cat);
         }
 
         public void IncrementFeature(F feat, C cat)
         {
-            throw new NotImplementedException();
+			_fc.IncrementFeature(feat, cat);
         }
 
         public long TotalCategoryItems()
         {
-            throw new NotImplementedException();
+			return _cc.TotalCategoryItems().GetAwaiter().GetResult();
         }
 
         public void RemoveCategory(C cat)
         {
-            throw new NotImplementedException();
+			_cc.RemoveCategory(cat);
+			_fc.RemoveCategory(cat);
         }
     }
 }

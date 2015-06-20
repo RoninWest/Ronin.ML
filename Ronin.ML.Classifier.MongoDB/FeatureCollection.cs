@@ -16,12 +16,14 @@ namespace Ronin.ML.Classifier
 	{
 		readonly IMongoCollection<FeatureCountItem<F, C>> _col;
 
-		public FeatureCollection(IMongoDatabase db, string colName = "feature")
+		const string FEAT_COL = "feature";
+
+		public FeatureCollection(IMongoDatabase db, string colName = null)
 		{
 			if (db == null)
 				throw new ArgumentNullException("db");
 			if (string.IsNullOrWhiteSpace(colName))
-				throw new ArgumentOutOfRangeException("colName can not be null or blank");
+				colName = FEAT_COL;
 
 			_col = db.GetCollection<FeatureCountItem<F, C>>(colName.ToLower());
 		}

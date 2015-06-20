@@ -15,12 +15,14 @@ namespace Ronin.ML.Classifier
 	{
         readonly IMongoCollection<CategoryItem<C>> _col;
 
-        public CategoryCollection(IMongoDatabase db, string colName = "category")
+		const string CAT_COL = "category";
+
+        public CategoryCollection(IMongoDatabase db, string colName = null)
         {
             if (db == null)
                 throw new ArgumentNullException("db");
-            if (string.IsNullOrWhiteSpace(colName))
-                throw new ArgumentOutOfRangeException("colName can not be null or blank");
+			if (string.IsNullOrWhiteSpace(colName))
+				colName = CAT_COL;
 
             _col = db.GetCollection<CategoryItem<C>>(colName.ToLower());
         }
