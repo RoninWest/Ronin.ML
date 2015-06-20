@@ -18,6 +18,8 @@ using System.Runtime.InteropServices;
 // to COM components.  If you need to access a type in this assembly from 
 // COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
+[assembly: InternalsVisibleTo("Ronin.ML.Classifier.Test")]
+[assembly: InternalsVisibleTo("Ronin.ML.Classifier.Test.MongoDB")]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("3054d1c2-37a0-4e7f-aa1e-48423c6c413f")]

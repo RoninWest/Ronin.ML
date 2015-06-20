@@ -19,15 +19,23 @@ namespace Ronin.ML.Classifier
 		where F : IEquatable<F>
 		where C : IEquatable<C>
 	{
-        readonly IMongoClient _client;
-        readonly IMongoDatabase _db;
+        protected readonly IMongoClient _client;
+        protected readonly IMongoDatabase _db;
 		readonly FeatureCollection<F, C> _fc;
 		readonly CategoryCollection<C> _cc;
 
 		public ClassifierDataInMongoDB(string urlString)
-			: this(new MongoUrl(urlString))
+            : this(BuildUrl(urlString))
 		{
 		}
+
+        static MongoUrl BuildUrl(string url)
+        {
+            if (string.IsNullOrWhiteSpace(url))
+                throw new ArgumentException("url can not be null or blank!");
+
+            return new MongoUrl(url);
+        }
 
 		public ClassifierDataInMongoDB(MongoUrl url, string featureCollection = null, string categoryCollection = null)
         {
@@ -48,37 +56,37 @@ namespace Ronin.ML.Classifier
 			_cc = new CategoryCollection<C>(_db, categoryCollection);
         }
 
-        public IEnumerable<C> CategoryKeys()
+        public virtual IEnumerable<C> CategoryKeys()
         {
 			return _cc.CategoryKeys().GetAwaiter().GetResult();
         }
 
-        public long CountCategory(C cat)
+        public virtual long CountCategory(C cat)
         {
 			return _cc.CountCategory(cat).GetAwaiter().GetResult();
         }
 
-        public long CountFeature(F feat, C cat)
+        public virtual long CountFeature(F feat, C cat)
         {
 			return _fc.CountFeature(feat, cat).GetAwaiter().GetResult();
         }
 
-        public void IncrementCategory(C cat)
+        public virtual void IncrementCategory(C cat)
         {
 			_cc.IncrementCategory(cat);
         }
 
-        public void IncrementFeature(F feat, C cat)
+        public virtual void IncrementFeature(F feat, C cat)
         {
 			_fc.IncrementFeature(feat, cat);
         }
 
-        public long TotalCategoryItems()
+        public virtual long TotalCategoryItems()
         {
 			return _cc.TotalCategoryItems().GetAwaiter().GetResult();
         }
 
-        public void RemoveCategory(C cat)
+        public virtual void RemoveCategory(C cat)
         {
 			_cc.RemoveCategory(cat);
 			_fc.RemoveCategory(cat);
