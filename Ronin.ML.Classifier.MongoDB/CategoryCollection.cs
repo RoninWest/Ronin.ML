@@ -9,19 +9,20 @@ using MongoDB.Driver.Linq.Utils;
 
 namespace Ronin.ML.Classifier
 {
-    class CategoryCollection<C> 
-        where C : IComparable<C>
-    {
+    class CategoryCollection<C>
+		//where C : IComparable<C>
+		where C : IEquatable<C>
+	{
         readonly IMongoCollection<CategoryItem<C>> _col;
 
-        public CategoryCollection(IMongoDatabase db, string colName = "Category")
+        public CategoryCollection(IMongoDatabase db, string colName = "category")
         {
             if (db == null)
                 throw new ArgumentNullException("db");
             if (string.IsNullOrWhiteSpace(colName))
                 throw new ArgumentOutOfRangeException("colName can not be null or blank");
 
-            _col = db.GetCollection<CategoryItem<C>>(colName);
+            _col = db.GetCollection<CategoryItem<C>>(colName.ToLower());
         }
 
         public virtual async Task<IEnumerable<C>> CategoryKeys()

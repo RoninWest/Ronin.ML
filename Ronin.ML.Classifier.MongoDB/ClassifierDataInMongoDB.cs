@@ -34,7 +34,7 @@ namespace Ronin.ML.Classifier
             else
                 dbName = url.DatabaseName;
 
-            _db = _client.GetDatabase(dbName);
+            _db = _client.GetDatabase(dbName.ToLower());
         }
 
         public ClassifierDataInMongoDB(string urlString)

@@ -10,7 +10,8 @@ namespace Ronin.ML.Classifier
 {
     [BsonIgnoreExtraElements(true, Inherited = true)]
     class CategoryItem<C>
-        where C : IComparable<C>
+		//where C : IComparable<C>
+		where C : IEquatable<C>
     {
         [BsonId]
         public C Id { get; set; }

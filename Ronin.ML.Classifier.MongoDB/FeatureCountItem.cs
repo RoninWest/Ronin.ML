@@ -11,9 +11,11 @@ namespace Ronin.ML.Classifier
 {
     [BsonIgnoreExtraElements(true, Inherited = true)]
     class FeatureCountItem<F, C>
-        where F : IComparable<F>
-        where C : IComparable<C>
-    {
+		//where F : IComparable<F>
+		//where C : IComparable<C>
+		where F : IEquatable<F>
+		where C : IEquatable<C>
+	{
         [BsonId]
         public F Id { get; set; }
 
