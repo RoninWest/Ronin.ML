@@ -27,18 +27,15 @@ namespace Ronin.ML.Classifier
 
 		public virtual async Task<long> CountFeature(F feat, C cat)
 		{
-			//var f = new FilterDefinitionBuilder<FeatureCountItem<F, C>>();
-			//var res = _col.Find(f.Eq(x => x.Id, feat)).FirstOrDefaultAsync();
+			var k = new FeatureCategoryKey<F, C> { Feature = feat, Category = cat };
 
-			var res = _col.Find(o => o.Id.Equals(feat)).FirstOrDefaultAsync();
+			//var f = new FilterDefinitionBuilder<FeatureCountItem<F, C>>();
+			//var res = _col.Find(f.Eq(x => x.Id, k)).FirstOrDefaultAsync();
+
+			var res = _col.Find(o => o.Id.Equals(k)).FirstOrDefaultAsync();
 			return await res.ContinueWith(o =>
 			{
-				var fc = o.Result;
-				long r = 0;
-				if (fc != null && fc.Map != null)
-					fc.Map.TryGetValue(cat, out r);
-
-				return r;
+				return o.Result != null ? o.Result.Value : 0;
 			});
 		}
 

@@ -58,6 +58,7 @@
     <Compile Include="ClassifierDataInMongoDB.cs" />
     <Compile Include="FeatureCollection.cs" />
     <Compile Include="FeatureCountItem.cs" />
+    <Compile Include="FeatureCategoryKey.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

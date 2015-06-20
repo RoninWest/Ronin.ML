@@ -17,17 +17,11 @@ namespace Ronin.ML.Classifier
 		where C : IEquatable<C>
 	{
         [BsonId]
-        public F Id { get; set; }
+        public FeatureCategoryKey<F, C> Id { get; set; }
 
-        [BsonIgnore]
-        Dictionary<C, long> _map = new Dictionary<C, long>();
-
-        [BsonElement]
-        [BsonDictionaryOptions(DictionaryRepresentation.Document)]
-        public Dictionary<C, long> Map
-        {
-            get { return _map; }
-            set { _map = value ?? new Dictionary<C, long>(); }
-        }
+		[BsonDefaultValue(0)]
+		[BsonRequired]
+		[BsonElement("v")]
+		public long Value { get; set; }
     }
 }

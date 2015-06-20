@@ -16,7 +16,9 @@ namespace Ronin.ML.Classifier
         [BsonId]
         public C Id { get; set; }
 
-        [BsonElement("v")]
+		[BsonDefaultValue(0)]
+		[BsonRequired]
+		[BsonElement("v")]
         public long Value { get; set; }
     }
 }
