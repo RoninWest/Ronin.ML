@@ -49,7 +49,6 @@ namespace Ronin.ML.Classifier
 		public virtual async void IncrementCategory(C cat)
 		{
 			var f = new FilterDefinitionBuilder<CategoryItem<C>>();
-
 			var ub = new UpdateDefinitionBuilder<CategoryItem<C>>();
 
 			var op = new FindOneAndUpdateOptions<CategoryItem<C>>();
@@ -62,17 +61,10 @@ namespace Ronin.ML.Classifier
 
 		public virtual async void RemoveCategory(C cat)
 		{
-			await _col.DeleteOneAsync(o => o.Id.Equals(cat));
+			//var f = new FilterDefinitionBuilder<CategoryItem<C>>();
+			//await _col.DeleteOneAsync(f.Eq(o => o.Id, cat));
 
-			//long val;
-			//if (_cc.TryRemove(cat, out val))
-			//{
-			//	F[] features = (from p in _fc
-			//					where p.Value.ContainsKey(cat)
-			//					select p.Key).ToArray();
-			//	FeatureCount<C> fc;
-			//	features.ForEach(f => _fc.TryRemove(f, out fc));
-			//}
+			await _col.DeleteOneAsync(o => o.Id.Equals(cat));
 		}
 	}
 }

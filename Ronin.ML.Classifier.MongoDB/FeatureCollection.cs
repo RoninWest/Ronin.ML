@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -39,14 +40,24 @@ namespace Ronin.ML.Classifier
 			});
 		}
 
-		public virtual void IncrementFeature(F feat, C cat)
+		public virtual async void IncrementFeature(F feat, C cat)
 		{
-			throw new NotImplementedException();
+			var f = new FilterDefinitionBuilder<FeatureCountItem<F, C>>();
+			var ub = new UpdateDefinitionBuilder<FeatureCountItem<F, C>>();
+
+			var op = new FindOneAndUpdateOptions<FeatureCountItem<F, C>>();
+			op.IsUpsert = true;
+			op.ReturnDocument = ReturnDocument.Before;
+			//op.Sort = new SortDefinitionBuilder<FeatureCountItem<F, C>>().Ascending(o => o.Id);
+
+			var k = new FeatureCategoryKey<F, C> { Feature = feat, Category = cat };
+			await _col.FindOneAndUpdateAsync(f.Eq(o => o.Id, k), ub.Inc(o => o.Value, 1), op);
 		}
 
-		public virtual void RemoveCategory(C cat)
+		public virtual async void RemoveCategory(C cat)
 		{
-			throw new NotImplementedException();
+			var f = new FilterDefinitionBuilder<FeatureCountItem<F, C>>();
+			await _col.DeleteManyAsync(f.Eq(o => o.Id.Category, cat));
 		}
     }
 } 
