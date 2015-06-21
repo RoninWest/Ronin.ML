@@ -1,8 +1,0 @@
-logpath=c:\logs\mongodb.log
-dbpath=c:\data\
-quiet=true
-noauth=true
-slowms=200
-#directoryperdb=true
-smallfiles=true
-nojournal=true
