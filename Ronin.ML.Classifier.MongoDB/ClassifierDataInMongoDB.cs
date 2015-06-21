@@ -14,10 +14,6 @@ namespace Ronin.ML.Classifier
     /// <typeparam name="F">any type for feature</typeparam>
     /// <typeparam name="C">any type for category</typeparam>
     public class ClassifierDataInMongoDB<F, C> : IClassifierData<F, C>
-		//where F : IComparable<F>
-		//where C : IComparable<C>
-		where F : IEquatable<F>
-		where C : IEquatable<C>
 	{
         protected readonly IMongoClient _client;
         protected readonly IMongoDatabase _db;

@@ -11,10 +11,6 @@ namespace Ronin.ML.Classifier
 {
 	[BsonIgnoreExtraElements(false, Inherited = true)]
 	class FeatureCategoryKey<F, C>
-		//where F : IComparable<F>
-		//where C : IComparable<C>
-		where F : IEquatable<F>
-		where C : IEquatable<C>
 	{
 		[BsonRequired]
 		[BsonElement("f")]

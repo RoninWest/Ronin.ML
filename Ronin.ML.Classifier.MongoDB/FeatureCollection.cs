@@ -11,8 +11,6 @@ using MongoDB.Driver.Linq.Utils;
 namespace Ronin.ML.Classifier
 {
 	class FeatureCollection<F, C>
-		where F : IEquatable<F>
-		where C : IEquatable<C>
 	{
 		readonly IMongoCollection<FeatureCountItem<F, C>> _col;
 

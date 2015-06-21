@@ -10,8 +10,6 @@ using MongoDB.Driver.Linq.Utils;
 namespace Ronin.ML.Classifier
 {
     class CategoryCollection<C>
-		//where C : IComparable<C>
-		where C : IEquatable<C>
 	{
         readonly IMongoCollection<CategoryItem<C>> _col;
 
