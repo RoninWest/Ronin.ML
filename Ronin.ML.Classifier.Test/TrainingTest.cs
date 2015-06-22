@@ -14,6 +14,8 @@ namespace Ronin.ML.Classifier.Test
 	/// <summary>
 	/// Training tests
 	/// </summary>
+    [TestFixture(typeof(TestClassifierDataInMongoDB<string, TestBucket>), typeof(WhiteSpaceTokenizer))]
+    [TestFixture(typeof(TestClassifierDataInMongoDB<string, TestBucket>), typeof(NoneWordTokenizer))]
     [TestFixture(typeof(TestClassifierDataInFile<string, TestBucket>), typeof(WhiteSpaceTokenizer))]
     [TestFixture(typeof(TestClassifierDataInFile<string, TestBucket>), typeof(NoneWordTokenizer))]
     [TestFixture(typeof(ClassifierDataInRAM<string, TestBucket>), typeof(WhiteSpaceTokenizer))]
@@ -49,6 +51,8 @@ namespace Ronin.ML.Classifier.Test
             {
                 if (_ds != null)
                     _ds.Dispose();
+                else if (_dataSrc != null && _dataSrc is IDisposable)
+                    (_dataSrc as IDisposable).Dispose();
             }
         }
 

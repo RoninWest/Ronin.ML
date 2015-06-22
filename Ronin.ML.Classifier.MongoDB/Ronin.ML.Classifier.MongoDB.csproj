@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{12DCF01D-CB9E-4B05-BE19-C26A6837C145}</ProjectGuid>
+    <ProjectGuid>{995F2A35-B15C-4164-86BA-60B819A4F97D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Ronin.ML.Classifier.Test</RootNamespace>
-    <AssemblyName>Ronin.ML.Classifier.Test</AssemblyName>
+    <RootNamespace>Ronin.ML.Classifier</RootNamespace>
+    <AssemblyName>Ronin.ML.Classifier.MongoDB</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
@@ -44,9 +44,6 @@
       <HintPath>..\packages\MongoDB.Driver.Core.2.0.1\lib\net45\MongoDB.Driver.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="nunit.framework">
-      <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -56,34 +53,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BayesianWordClassifier.cs" />
-    <Compile Include="ClassifierTest.cs" />
-    <Compile Include="DummyClassifier.cs" />
-    <Compile Include="FisherWordClassifier.cs" />
-    <Compile Include="TestClassifierDataInFile.cs" />
-    <Compile Include="TestClassifierDataInMongoDB.cs" />
-    <Compile Include="Training.cs" />
-    <Compile Include="TestBucket.cs" />
-    <Compile Include="TrainingSet.cs" />
-    <Compile Include="TrainingTest.cs" />
+    <Compile Include="CategoryCollection.cs" />
+    <Compile Include="CategoryItem.cs" />
+    <Compile Include="ClassifierDataInMongoDB.cs" />
+    <Compile Include="FeatureCollection.cs" />
+    <Compile Include="FeatureCountItem.cs" />
+    <Compile Include="FeatureCategoryKey.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Ronin.ML.Classifier.MongoDB\Ronin.ML.Classifier.MongoDB.csproj">
-      <Project>{995f2a35-b15c-4164-86ba-60b819a4f97d}</Project>
-      <Name>Ronin.ML.Classifier.MongoDB</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Ronin.ML.Classifier\Ronin.ML.Classifier.csproj">
       <Project>{f400f34f-efe1-4243-9d0c-299c8df9aeb0}</Project>
       <Name>Ronin.ML.Classifier</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Ronin.ML.Text\Ronin.ML.Text.csproj">
-      <Project>{4588a88e-b5c9-411f-a07d-a5fbe972a36e}</Project>
-      <Name>Ronin.ML.Text</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Ronin\Ronin.csproj">
-      <Project>{02b220c8-cd13-4e25-8bd3-9498e8412a8e}</Project>
-      <Name>Ronin</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -5,23 +5,24 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Ronin.ML.AbstractClassifier")]
-[assembly: AssemblyDescription("Classifiers")]
+[assembly: AssemblyTitle("Ronin.ML.Classifier.MongoDB")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Ronin West Consulting")]
-[assembly: AssemblyProduct("Ronin.ML.AbstractClassifier")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("Ronin.ML.Classifier.MongoDB")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: InternalsVisibleTo("Ronin.ML.Classifier.Test")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
 // COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
+[assembly: InternalsVisibleTo("Ronin.ML.Classifier.Test")]
+[assembly: InternalsVisibleTo("Ronin.ML.Classifier.Test.MongoDB")]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("c6afed92-4cef-496f-8463-8ad96d252638")]
+[assembly: Guid("3054d1c2-37a0-4e7f-aa1e-48423c6c413f")]
 
 // Version information for an assembly consists of the following four values:
 //
