@@ -14,5 +14,23 @@ namespace Ronin.ML.Classifier.Test
         {
 
         }
+
+        public override void IncrementCategory(C cat)
+        {
+            base.IncrementCategory(cat);
+            Thread.Sleep(3); //give time for the FS to catch up
+        }
+
+        public override void IncrementFeature(F feat, C cat)
+        {
+            base.IncrementFeature(feat, cat);
+            Thread.Sleep(3); //give time for the FS to catch up
+        }
+
+        public override void RemoveCategory(C cat)
+        {
+            base.RemoveCategory(cat);
+            Thread.Sleep(20); //give time for the FS to catch up
+        }
     }
 }
