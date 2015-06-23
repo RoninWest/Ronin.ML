@@ -8,7 +8,7 @@ using RestSharp;
 using HtmlAgilityPack;
 using System.Web;
 
-namespace Ronin.ML
+namespace Ronin.ML.Console
 {
 	/// <summary>
 	/// Given a URL, pull the text content and strip it clean of HTML marking if present

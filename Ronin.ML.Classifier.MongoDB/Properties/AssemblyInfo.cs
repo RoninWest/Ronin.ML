@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Ronin.ML.Classifier.MongoDB")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("MongoDB storage backing classes for Classifier logic")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Ronin West Consulting")]
 [assembly: AssemblyProduct("Ronin.ML.Classifier.MongoDB")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]

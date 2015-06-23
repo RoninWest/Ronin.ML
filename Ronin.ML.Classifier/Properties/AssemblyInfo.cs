@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Ronin.ML.AbstractClassifier")]
-[assembly: AssemblyDescription("Classifiers")]
+[assembly: AssemblyDescription("Classifier Logic")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Ronin West Consulting")]
 [assembly: AssemblyProduct("Ronin.ML.AbstractClassifier")]

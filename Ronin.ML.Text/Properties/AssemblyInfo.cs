@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Ronin.ML.Text")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Text processing library")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Ronin West Consulting")]
 [assembly: AssemblyProduct("Ronin.ML.Text")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]

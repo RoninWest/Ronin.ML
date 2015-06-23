@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Ronin.ML.Text;
+using Cnsl = System.Console;
 
-namespace Ronin.ML
+namespace Ronin.ML.Console
 {
 	class Program
 	{
@@ -15,10 +16,10 @@ namespace Ronin.ML
 			//NormalizeArgs(args);
 			BuildWordIndex(args);
 
-			Console.WriteLine("Took: {0}", DateTime.UtcNow - started);
+			Cnsl.WriteLine("Took: {0}", DateTime.UtcNow - started);
 #if DEBUG
-			Console.WriteLine("\r\nPress ANY Key");
-			Console.ReadKey();
+			Cnsl.WriteLine("\r\nPress ANY Key");
+			Cnsl.ReadKey();
 #endif
 		}
 
@@ -48,9 +49,9 @@ namespace Ronin.ML
 		static void Print(WordIndex wi)
 		{
 			if (wi == null)
-				Console.WriteLine("<null>");
+				Cnsl.WriteLine("<null>");
 			else if (wi.Count == 0)
-				Console.WriteLine("<empty>");
+				Cnsl.WriteLine("<empty>");
 			else
 			{
 				var reOrder = from p in wi
@@ -58,9 +59,9 @@ namespace Ronin.ML
 							  select p;
 				foreach (var p in reOrder.Take(100))
 				{
-					Console.Write("{0}:{1}, ", p.Key, p.Value.Count);
+					Cnsl.Write("{0}:{1}, ", p.Key, p.Value.Count);
 				}
-				Console.WriteLine("\r\n====================\r\nTotal Words: {0:N0}", wi.Count);
+				Cnsl.WriteLine("\r\n====================\r\nTotal Words: {0:N0}", wi.Count);
 			}
 		}
 
@@ -81,7 +82,7 @@ namespace Ronin.ML
 
 				var wc = new WordContext(s);
 				wp.Process(wc);
-				Console.WriteLine("{0,-20} ==> {1}", wc.Original, wc.Result);
+				Cnsl.WriteLine("{0,-20} ==> {1}", wc.Original, wc.Result);
 			}
 		}
 

@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Ronin.ML")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Ronin.ML.Console")]
+[assembly: AssemblyDescription("Console Test Program")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Ronin.ML")]
+[assembly: AssemblyCompany("Ronin West Consulting")]
+[assembly: AssemblyProduct("Ronin.ML.Console")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
