@@ -81,10 +81,6 @@
       <Project>{4588a88e-b5c9-411f-a07d-a5fbe972a36e}</Project>
       <Name>Ronin.ML.Text</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Ronin\Ronin.csproj">
-      <Project>{02b220c8-cd13-4e25-8bd3-9498e8412a8e}</Project>
-      <Name>Ronin</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

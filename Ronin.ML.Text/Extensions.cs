@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ronin
+namespace Ronin.ML.Text
 {
 	/// <summary>
 	/// Common extensions
 	/// </summary>
-	public static class Extensions
+	static class Extensions
 	{
 		/// <summary>
 		/// A for each enumerator

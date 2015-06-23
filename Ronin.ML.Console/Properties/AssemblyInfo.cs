@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Ronin")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Ronin.ML.Console")]
+[assembly: AssemblyDescription("Console Test Program")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Ronin")]
+[assembly: AssemblyCompany("Ronin West Consulting")]
+[assembly: AssemblyProduct("Ronin.ML.Console")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("97e4a1a6-9da7-43fb-a2fd-994f460274c7")]
+[assembly: Guid("7387c3ec-dc70-4bf5-a06a-b69bdcf3b4f0")]
 
 // Version information for an assembly consists of the following four values:
 //
