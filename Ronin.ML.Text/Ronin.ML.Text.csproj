@@ -69,6 +69,7 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="Ronin.ML.Text.nuspec" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="StopWords\stop-words_english_1_en.txt">
