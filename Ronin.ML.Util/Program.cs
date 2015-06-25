@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Ronin.ML.Text;
-using Cnsl = System.Console;
 
-namespace Ronin.ML.Console
+namespace Ronin.ML.Util
 {
 	class Program
 	{
@@ -16,10 +14,10 @@ namespace Ronin.ML.Console
 			//NormalizeArgs(args);
 			BuildWordIndex(args);
 
-			Cnsl.WriteLine("Took: {0}", DateTime.UtcNow - started);
+			Console.WriteLine("Took: {0}", DateTime.UtcNow - started);
 #if DEBUG
-			Cnsl.WriteLine("\r\nPress ANY Key");
-			Cnsl.ReadKey();
+			Console.WriteLine("\r\nPress ANY Key");
+			Console.ReadKey();
 #endif
 		}
 
@@ -49,9 +47,9 @@ namespace Ronin.ML.Console
 		static void Print(WordIndex wi)
 		{
 			if (wi == null)
-				Cnsl.WriteLine("<null>");
+				Console.WriteLine("<null>");
 			else if (wi.Count == 0)
-				Cnsl.WriteLine("<empty>");
+				Console.WriteLine("<empty>");
 			else
 			{
 				var reOrder = from p in wi
@@ -59,9 +57,9 @@ namespace Ronin.ML.Console
 							  select p;
 				foreach (var p in reOrder.Take(100))
 				{
-					Cnsl.Write("{0}:{1}, ", p.Key, p.Value.Count);
+					Console.Write("{0}:{1}, ", p.Key, p.Value.Count);
 				}
-				Cnsl.WriteLine("\r\n====================\r\nTotal Words: {0:N0}", wi.Count);
+				Console.WriteLine("\r\n====================\r\nTotal Words: {0:N0}", wi.Count);
 			}
 		}
 
@@ -82,7 +80,7 @@ namespace Ronin.ML.Console
 
 				var wc = new WordContext(s);
 				wp.Process(wc);
-				Cnsl.WriteLine("{0,-20} ==> {1}", wc.Original, wc.Result);
+				Console.WriteLine("{0,-20} ==> {1}", wc.Original, wc.Result);
 			}
 		}
 

@@ -18,7 +18,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ronin.ML.Classifier.Test", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ronin.ML.Classifier.MongoDB", "Ronin.ML.Classifier.MongoDB\Ronin.ML.Classifier.MongoDB.csproj", "{995F2A35-B15C-4164-86BA-60B819A4F97D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ronin.ML.Console", "Ronin.ML.Console\Ronin.ML.Console.csproj", "{7387C3EC-DC70-4BF5-A06A-B69BDCF3B4F0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ronin.ML.Util", "Ronin.ML.Util\Ronin.ML.Util.csproj", "{7387C3EC-DC70-4BF5-A06A-B69BDCF3B4F0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

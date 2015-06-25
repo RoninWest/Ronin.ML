@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using RestSharp;
 using HtmlAgilityPack;
 using System.Web;
 
-namespace Ronin.ML.Console
+namespace Ronin.ML.Util
 {
 	/// <summary>
 	/// Given a URL, pull the text content and strip it clean of HTML marking if present
