@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Ronin.ML.Text;
+using System.IO;
+using System.Reflection;
 
 namespace Ronin.ML.Util
 {
@@ -33,7 +35,10 @@ namespace Ronin.ML.Util
 			min:3);
 
 			IWordProcessor stopWords = new StopWordFilter(lCaseStem(null), TextLanguage.Default);
-			IWordProcessor wp = lCaseStem(stopWords);
+
+			var ignoreFile = new FileInfo(Path.Combine(AssemblyDirectory, "WebWordIgnores.txt"));
+			IWordProcessor ignores = new IgnoreWordFilter(stopWords, new WhiteSpaceTokenizer(), ignoreFile);
+			IWordProcessor wp = lCaseStem(ignores);
 
 			var indexer = new WordIndexGenerator(new NoneWordTokenizer(excludeNumber:true), wp);
 
@@ -55,11 +60,22 @@ namespace Ronin.ML.Util
 				var reOrder = from p in wi
 							  orderby p.Value.Count descending, p.Key.Length descending, p.Value.First() ascending
 							  select p;
-				foreach (var p in reOrder.Take(100))
+				foreach (var p in reOrder.Take(200))
 				{
 					Console.Write("{0}:{1}, ", p.Key, p.Value.Count);
 				}
 				Console.WriteLine("\r\n====================\r\nTotal Words: {0:N0}", wi.Count);
+			}
+		}
+
+		static string AssemblyDirectory
+		{
+			get
+			{
+				string codeBase = Assembly.GetExecutingAssembly().CodeBase;
+				UriBuilder uri = new UriBuilder(codeBase);
+				string path = Uri.UnescapeDataString(uri.Path);
+				return Path.GetDirectoryName(path);
 			}
 		}
 
