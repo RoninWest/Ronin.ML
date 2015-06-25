@@ -5,6 +5,6 @@
 
 Once Text & Classifier projects have completed and proper unit tests, Wiki pages will follows!
 
-For bleeding edge nugets of this project, please add the following url to your nuget path: https://ci.appveyor.com/nuget/ronin.ml
+For *bleeding edge* nugets of this project, please add the following url to your nuget path: https://ci.appveyor.com/nuget/ronin.ml
 
 Once the codebase is more stable, it will be published to nuget.org
