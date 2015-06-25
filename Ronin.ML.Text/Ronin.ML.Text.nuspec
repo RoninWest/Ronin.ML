@@ -1,0 +1,22 @@
+﻿<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>https://github.com/RoninWest/Ronin.ML/tree</licenseUrl>
+    <projectUrl>https://github.com/RoninWest/Ronin.ML/tree</projectUrl>
+    <iconUrl>https://avatars2.githubusercontent.com/u/4606120?v=3&amp;s=460</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes></releaseNotes>
+    <copyright>$copyright$</copyright>
+    <tags>Ronin Machine Learning Text Processing NLP</tags>
+    <!--<files>
+      <file src="..\..\SomeRoot\**\*.*" target="" />
+    </files>-->
+  </metadata>
+</package>
+<!-- NOTE: see https://docs.nuget.org/create/creating-and-publishing-a-package -->
