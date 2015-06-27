@@ -125,11 +125,15 @@ namespace Ronin.ML.Util
                     string[] arr = line.Split(null);
                     string cat = arr.FirstOrDefault();
                     var url = new Uri(arr.LastOrDefault());
-
+#if DEBUG
+                    Console.WriteLine("{0}  | {1}", cat, url);
+#endif
                     Task.Factory.StartNew(() =>
                     {
+                        System.Threading.Thread.Sleep(100);
                         string content =_extractor.Get(url);
-                        _classifier.ItemTrain(content, cat);
+                        if(!string.IsNullOrWhiteSpace(content))
+                            _classifier.ItemTrain(content, cat);
                     });
                 }
             }
@@ -137,7 +141,15 @@ namespace Ronin.ML.Util
 
         public void Classify(string url)
         {
-            string content = _extractor.Get(url);
+            string content = _extractor.Get("http://food2fork.com");
+#if DEBUG
+            Console.WriteLine(content);
+#endif
+            System.Threading.Thread.Sleep(1000);
+            content = _extractor.Get(url);
+#if DEBUG
+            Console.WriteLine(content);
+#endif
             Classification<string> r = _classifier.ItemClassify(content, "unknown");
             Console.WriteLine("{0} {1:N0}", r.Category, r.Probability * 100);
         }
