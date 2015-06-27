@@ -58,6 +58,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Ronin.ML.Classifier\Ronin.ML.Classifier.csproj">
+      <Project>{f400f34f-efe1-4243-9d0c-299c8df9aeb0}</Project>
+      <Name>Ronin.ML.Classifier</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Ronin.ML.Text\Ronin.ML.Text.csproj">
       <Project>{4588a88e-b5c9-411f-a07d-a5fbe972a36e}</Project>
       <Name>Ronin.ML.Text</Name>

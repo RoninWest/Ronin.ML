@@ -2,19 +2,37 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Ronin.ML.Text;
 using System.IO;
+using System.Threading.Tasks;
 using System.Reflection;
+using Ronin.ML.Text;
+using Ronin.ML.Classifier;
 
 namespace Ronin.ML.Util
 {
-	class Program
+	class Program : IDisposable
 	{
-		static void Main(string[] args)
+		static void Main(params string[] args)
 		{
 			DateTime started = DateTime.UtcNow;
-			//NormalizeArgs(args);
-			BuildWordIndex(args);
+
+            if (args.Length < 2 || string.IsNullOrWhiteSpace(args.FirstOrDefault()) || string.IsNullOrWhiteSpace(args.LastOrDefault()))
+                throw new ArgumentException(Usage);
+
+            using (var logic = new Program())
+            {
+                switch (args.FirstOrDefault().ToLower())
+                {
+                    case "train":
+                        logic.Train(args.LastOrDefault());
+                        break;
+                    case "classify":
+                        logic.Classify(args.LastOrDefault());
+                        break;
+                    default:
+                        throw new InvalidOperationException(Usage);
+                }
+            }
 
 			Console.WriteLine("Took: {0}", DateTime.UtcNow - started);
 #if DEBUG
@@ -23,12 +41,19 @@ namespace Ronin.ML.Util
 #endif
 		}
 
-		static void BuildWordIndex(string[] args)
-		{
-			if (args.Length == 0 || !Uri.IsWellFormedUriString(args.FirstOrDefault(), UriKind.Absolute))
-				throw new InvalidOperationException("please provide a valid absolute URL");
+        static string Usage
+        {
+            get { return @"Usage:\r\ntrain path.txt\r\nclassify url"; }
+        }
 
-			Func<IWordProcessor, IWordProcessor> lCaseStem = n => new LengthFilter(
+        readonly WordIndexGenerator _indexer;
+        readonly WebTextExtractor _extractor;
+        readonly IClassifier<string, string> _classifier;
+        readonly IDataStorable _storableData;
+
+		private Program()
+		{
+            Func<IWordProcessor, IWordProcessor> lCaseStem = n => new LengthFilter(
 				new CaseNormalizer(
 					new StemNormalizer(n)
 				), 
@@ -40,14 +65,82 @@ namespace Ronin.ML.Util
 			IWordProcessor ignores = new IgnoreWordFilter(stopWords, new WhiteSpaceTokenizer(), ignoreFile);
 			IWordProcessor wp = lCaseStem(ignores);
 
-			var indexer = new WordIndexGenerator(new NoneWordTokenizer(excludeNumber:true), wp);
+            _indexer = new WordIndexGenerator(new NoneWordTokenizer(excludeNumber: true), wp);
+            _extractor = new WebTextExtractor();
 
-			var logic = new WebTextExtractor(args.First());
-			string content = logic.Get();
-			
-			WordIndex wi = indexer.Process(content);
-			Print(wi);
+            var storage = new ClassifierDataInFile<string, string>();
+            _storableData = storage;
+
+            _classifier = new FisherClassifier<string, string, string>(storage, ExtractFeatures, GetThreshold);
+            //string content = _extractor.Get();
+            //WordIndex wi = _indexer.Process(content);
+            //Print(wi);
 		}
+
+        public void Dispose()
+        {
+            if (_storableData != null)
+                _storableData.Dispose();
+        }
+
+        IEnumerable<string> ExtractFeatures(string data)
+        {
+            WordIndex wi = _indexer.Process(data);
+#if DEBUG
+            //Print(wi);
+#endif
+            return wi.Keys;
+        }
+
+        static double GetThreshold(string cat)
+        {
+            switch (cat.ToLower())
+            {
+                case "seafood":
+                    return .1;
+                case "meat":
+                    return .2;
+                case "vegetarian":
+                    return .3;
+                case "vegan":
+                    return .4;
+                case "unknown":
+                default:
+                    return 0;
+            }
+        }
+
+        public void Train(string path)
+        {
+            var f = new FileInfo(path);
+            if (!f.Exists)
+                throw new FileNotFoundException(path);
+
+            using (FileStream fs = f.OpenRead())
+            using (var sr = new StreamReader(fs))
+            {
+                string line;
+                while ((line = sr.ReadLine()) != null)
+                {
+                    string[] arr = line.Split(null);
+                    string cat = arr.FirstOrDefault();
+                    var url = new Uri(arr.LastOrDefault());
+
+                    Task.Factory.StartNew(() =>
+                    {
+                        string content =_extractor.Get(url);
+                        _classifier.ItemTrain(content, cat);
+                    });
+                }
+            }
+        }
+
+        public void Classify(string url)
+        {
+            string content = _extractor.Get(url);
+            Classification<string> r = _classifier.ItemClassify(content, "unknown");
+            Console.WriteLine("{0} {1:N0}", r.Category, r.Probability * 100);
+        }
 
 		static void Print(WordIndex wi)
 		{
@@ -76,27 +169,6 @@ namespace Ronin.ML.Util
 				UriBuilder uri = new UriBuilder(codeBase);
 				string path = Uri.UnescapeDataString(uri.Path);
 				return Path.GetDirectoryName(path);
-			}
-		}
-
-		static void NormalizeArgs(string[] args)
-		{
-			Func<IWordProcessor, IWordProcessor> lCaseStem = n => new LengthFilter(
-				new CaseNormalizer(
-					new StemNormalizer(n)
-				)
-			);
-
-			IWordProcessor stopWords = new StopWordFilter(lCaseStem(null), TextLanguage.Default);
-			IWordProcessor wp = lCaseStem(stopWords);
-			foreach (string s in args)
-			{
-				if (string.IsNullOrWhiteSpace(s))
-					continue;
-
-				var wc = new WordContext(s);
-				wp.Process(wc);
-				Console.WriteLine("{0,-20} ==> {1}", wc.Original, wc.Result);
 			}
 		}
 

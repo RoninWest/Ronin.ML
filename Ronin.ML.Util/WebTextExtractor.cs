@@ -27,18 +27,16 @@ namespace Ronin.ML.Util
 		readonly RestClient _client;
 
 		/// <summary>
-		/// Instantiate with base path URL
+		/// Instantiate with optional base path URL
 		/// </summary>
-		/// <param name="basePath"></param>
-		/// <remarks>base path is required due to rest-sharp work flow.  It is possible to add authentication support here later.</remarks>
-		public WebTextExtractor(string basePath)
+		/// <param name="basePath">optional</param>
+		/// <remarksIt is possible to add authentication support here later.</remarks>
+		public WebTextExtractor(string basePath = null)
 		{
-			if (string.IsNullOrWhiteSpace(basePath))
-				throw new ArgumentException("basePath can not be null or blank!");
-			if (!Uri.IsWellFormedUriString(basePath, UriKind.Absolute))
-				throw new ArgumentOutOfRangeException("basePath is not an absolute URL!");
-
-			_client = new RestClient(basePath);
+            if(string.IsNullOrWhiteSpace(basePath))
+			    _client = new RestClient();
+            else
+                _client = new RestClient(basePath);
         }
 
 		/// <summary>
