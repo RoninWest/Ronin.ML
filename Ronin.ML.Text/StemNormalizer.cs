@@ -50,8 +50,14 @@ namespace Ronin.ML.Text
 			if (word.Result == null)
 				return;
 
-			word.Result = _logic.Stem(word.Result);
-
+            try
+            {
+                word.Result = _logic.Stem(word.Result);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine(ex);
+            }
 			if(_processor != null)
 				_processor.Process(word);
 		}

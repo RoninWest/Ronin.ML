@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Text;
 using System.IO;
@@ -15,30 +16,45 @@ namespace Ronin.ML.Util
 		static void Main(params string[] args)
 		{
 			DateTime started = DateTime.UtcNow;
-
-            if (args.Length < 2 || string.IsNullOrWhiteSpace(args.FirstOrDefault()) || string.IsNullOrWhiteSpace(args.LastOrDefault()))
-                throw new ArgumentException(Usage);
-
-            using (var logic = new Program())
+            try
             {
-                switch (args.FirstOrDefault().ToLower())
+                if (args.Length < 1 || string.IsNullOrWhiteSpace(args.FirstOrDefault()))
+                    throw new ArgumentException(Usage);
+
+                using (var logic = new Program())
                 {
-                    case "train":
-                        logic.Train(args.LastOrDefault());
-                        break;
-                    case "classify":
-                        logic.Classify(args.LastOrDefault());
-                        break;
-                    default:
-                        throw new InvalidOperationException(Usage);
+                    switch (args.FirstOrDefault().ToLower())
+                    {
+                        case "train":
+                            if (args.Length < 2 || string.IsNullOrWhiteSpace(args.LastOrDefault()))
+                                logic.Train();
+                            else
+                                logic.Train(args.LastOrDefault());
+                            break;
+                        case "classify":
+                        case "test":
+                            if (args.Length < 2 || string.IsNullOrWhiteSpace(args.LastOrDefault()))
+                                throw new ArgumentException(Usage);
+
+                            logic.Classify(args.LastOrDefault());
+                            break;
+                        default:
+                            throw new InvalidOperationException(Usage);
+                    }
                 }
             }
-
-			Console.WriteLine("Took: {0}", DateTime.UtcNow - started);
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine(ex);
+            }
+            finally
+            {
+                Console.WriteLine("Took: {0}", DateTime.UtcNow - started);
 #if DEBUG
-			Console.WriteLine("\r\nPress ANY Key");
-			Console.ReadKey();
+                Console.WriteLine("\r\nPress ANY Key");
+                Console.ReadKey();
 #endif
+            }
 		}
 
         static string Usage
@@ -47,9 +63,10 @@ namespace Ronin.ML.Util
         }
 
         readonly WordIndexGenerator _indexer;
-        readonly WebTextExtractor _extractor;
+        readonly AsyncWebText _extractor;
         readonly IClassifier<string, string> _classifier;
         readonly IDataStorable _storableData;
+        readonly IClassifierData<string, string> _storage;
 
 		private Program()
 		{
@@ -66,15 +83,14 @@ namespace Ronin.ML.Util
 			IWordProcessor wp = lCaseStem(ignores);
 
             _indexer = new WordIndexGenerator(new NoneWordTokenizer(excludeNumber: true), wp);
-            _extractor = new WebTextExtractor();
+            _extractor = new AsyncWebText();
 
-            var storage = new ClassifierDataInFile<string, string>();
+            var storage = new ClassifierDataInFile<string, string>(false);
+            storage.Load();
+            _storage = storage;
             _storableData = storage;
 
             _classifier = new FisherClassifier<string, string, string>(storage, ExtractFeatures, GetThreshold);
-            //string content = _extractor.Get();
-            //WordIndex wi = _indexer.Process(content);
-            //Print(wi);
 		}
 
         public void Dispose()
@@ -110,12 +126,33 @@ namespace Ronin.ML.Util
             }
         }
 
+        void RemovePreviousTraining()
+        {
+            var keys = _storage.CategoryKeys();
+            if (keys != null)
+            {
+                foreach (string k in keys)
+                {
+                    _storage.RemoveCategory(k);
+                }
+                _storableData.Save();
+            }
+        }
+
+        public void Train()
+        {
+            Train(Path.Combine(AssemblyDirectory, "RecipesURL.txt"));
+        }
+
         public void Train(string path)
         {
             var f = new FileInfo(path);
             if (!f.Exists)
                 throw new FileNotFoundException(path);
 
+            RemovePreviousTraining();
+
+            var tasks = new ConcurrentBag<Task>();
             using (FileStream fs = f.OpenRead())
             using (var sr = new StreamReader(fs))
             {
@@ -126,32 +163,33 @@ namespace Ronin.ML.Util
                     string cat = arr.FirstOrDefault();
                     var url = new Uri(arr.LastOrDefault());
 #if DEBUG
+                    System.Threading.Thread.Sleep(100);
                     Console.WriteLine("{0}  | {1}", cat, url);
 #endif
-                    Task.Factory.StartNew(() =>
+                    tasks.Add(Task.Factory.StartNew(() =>
                     {
-                        System.Threading.Thread.Sleep(100);
-                        string content =_extractor.Get(url);
+                        string content = _extractor.Get(url).GetAwaiter().GetResult();
                         if(!string.IsNullOrWhiteSpace(content))
                             _classifier.ItemTrain(content, cat);
-                    });
+                    }));
                 }
             }
+
+            Task.Factory.ContinueWhenAll(tasks.ToArray(), arr => 
+            {
+                Console.WriteLine("All {0} requests are done!", arr.Length);
+            });
         }
 
         public void Classify(string url)
         {
-            string content = _extractor.Get("http://food2fork.com");
+            var u = new Uri(url);
+            string content = _extractor.Get(u).GetAwaiter().GetResult();
 #if DEBUG
-            Console.WriteLine(content);
-#endif
-            System.Threading.Thread.Sleep(1000);
-            content = _extractor.Get(url);
-#if DEBUG
-            Console.WriteLine(content);
+            //Console.WriteLine(content);
 #endif
             Classification<string> r = _classifier.ItemClassify(content, "unknown");
-            Console.WriteLine("{0} {1:N0}", r.Category, r.Probability * 100);
+            Console.WriteLine("{0} => {1} {2:N0}%", u.PathAndQuery, r.Category, r.Probability * 100);
         }
 
 		static void Print(WordIndex wi)
