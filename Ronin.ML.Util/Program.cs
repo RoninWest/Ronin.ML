@@ -104,6 +104,7 @@ namespace Ronin.ML.Util
             _storableData = storage;
 
             _classifier = new FisherClassifier<string, string, string>(storage, ExtractFeatures, GetThreshold);
+            //_classifier = new BayesianClassifier<string, string, string>(storage, ExtractFeatures, GetThreshold2);
 		}
 
         public void Dispose()
@@ -133,6 +134,24 @@ namespace Ronin.ML.Util
                     return .0001;
                 case "vegan":
                     return .05;
+                case "unknown":
+                default:
+                    return 0;
+            }
+        }
+
+        static double GetThreshold2(string cat)
+        {
+            switch (cat.ToLower())
+            {
+                case "seafood":
+                    return 1000;
+                case "meat":
+                    return 10;
+                case "vegetarian":
+                    return 1;
+                case "vegan":
+                    return 500;
                 case "unknown":
                 default:
                     return 0;
