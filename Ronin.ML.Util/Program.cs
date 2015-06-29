@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Reflection;
 using Ronin.ML.Text;
@@ -31,12 +33,17 @@ namespace Ronin.ML.Util
                             else
                                 logic.Train(args.LastOrDefault());
                             break;
-                        case "classify":
                         case "test":
+                            if (args.Length < 2 || string.IsNullOrWhiteSpace(args.LastOrDefault()))
+                                logic.Test();
+                            else
+                                logic.Test(args.LastOrDefault());
+                            break;
+                        case "classify":
                             if (args.Length < 2 || string.IsNullOrWhiteSpace(args.LastOrDefault()))
                                 throw new ArgumentException(Usage);
 
-                            logic.Classify(args.LastOrDefault());
+                            logic.Classify(args.Skip(1).ToArray());
                             break;
                         default:
                             throw new InvalidOperationException(Usage);
@@ -51,8 +58,13 @@ namespace Ronin.ML.Util
             {
                 Console.WriteLine("Took: {0}", DateTime.UtcNow - started);
 #if DEBUG
-                Console.WriteLine("\r\nPress ANY Key");
-                Console.ReadKey();
+                ConsoleKeyInfo k;
+                do
+                {
+                    Console.WriteLine("\r\nPress ESC Key to quit");
+                    k = Console.ReadKey();
+                }
+                while (k.Key != ConsoleKey.Escape);
 #endif
             }
 		}
@@ -78,9 +90,10 @@ namespace Ronin.ML.Util
 
 			IWordProcessor stopWords = new StopWordFilter(lCaseStem(null), TextLanguage.Default);
 
-			var ignoreFile = new FileInfo(Path.Combine(AssemblyDirectory, "WebWordIgnores.txt"));
-			IWordProcessor ignores = new IgnoreWordFilter(stopWords, new WhiteSpaceTokenizer(), ignoreFile);
-			IWordProcessor wp = lCaseStem(ignores);
+            var ignoreFile = new FileInfo(Path.Combine(AssemblyDirectory, "WebWordIgnores.txt"));
+            IWordProcessor ignores = new IgnoreWordFilter(stopWords, new WhiteSpaceTokenizer(), ignoreFile);
+            IWordProcessor wp = lCaseStem(ignores);
+            //IWordProcessor wp = lCaseStem(stopWords);
 
             _indexer = new WordIndexGenerator(new NoneWordTokenizer(excludeNumber: true), wp);
             _extractor = new AsyncWebText();
@@ -115,11 +128,11 @@ namespace Ronin.ML.Util
                 case "seafood":
                     return .1;
                 case "meat":
-                    return .2;
+                    return .001;
                 case "vegetarian":
-                    return .3;
+                    return .0001;
                 case "vegan":
-                    return .4;
+                    return .05;
                 case "unknown":
                 default:
                     return 0;
@@ -137,22 +150,63 @@ namespace Ronin.ML.Util
                 }
                 _storableData.Save();
             }
+            //FlushCache();
         }
+
+        void FlushCache()
+        {
+            var d = new DirectoryInfo(Path.Combine(AssemblyDirectory, CACHED));
+            if (d.Exists)
+            {
+                foreach (FileInfo f in d.EnumerateFiles("*.html"))
+                {
+                    f.Delete();
+                }
+            }
+        }
+
+        FileInfo GetCacheFile(Uri u)
+        {
+            if (u == null)
+                throw new ArgumentNullException("u");
+
+            var d = new DirectoryInfo(Path.Combine(AssemblyDirectory, CACHED));
+            if (!d.Exists)
+                d.Create();
+
+            string fn = RE_FILE_SAFE.Replace(u.PathAndQuery, new MatchEvaluator(m =>
+            {
+                if (m.Index == 0)
+                    return string.Empty;
+
+                return "-";
+            }));
+            fn = Path.Combine(d.FullName, fn + ".html");
+            return new FileInfo(fn);
+        }
+
+        const string RECIPES = "RecipesURL.txt";
+        const string CACHED = "cached";
 
         public void Train()
         {
-            Train(Path.Combine(AssemblyDirectory, "RecipesURL.txt"));
+            Train(Path.Combine(AssemblyDirectory, RECIPES));
         }
+
+        static readonly Regex RE_FILE_SAFE = new Regex(@"[^0-9a-z_]+", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         public void Train(string path)
         {
+            Console.WriteLine("==============================================");
+            Console.WriteLine("Train: {0}", path);
             var f = new FileInfo(path);
             if (!f.Exists)
                 throw new FileNotFoundException(path);
 
             RemovePreviousTraining();
 
-            var tasks = new ConcurrentBag<Task>();
+            int total = 0;
+            int success = 0;
             using (FileStream fs = f.OpenRead())
             using (var sr = new StreamReader(fs))
             {
@@ -162,34 +216,107 @@ namespace Ronin.ML.Util
                     string[] arr = line.Split(null);
                     string cat = arr.FirstOrDefault();
                     var url = new Uri(arr.LastOrDefault());
+
+                    Interlocked.Increment(ref total);
+                    FileInfo c = GetCacheFile(url);
+                    string content;
+                    if (c.Exists)
+                        content = File.ReadAllText(c.FullName);
+                    else
+                        content = _extractor.Get(url).GetAwaiter().GetResult();
 #if DEBUG
-                    System.Threading.Thread.Sleep(100);
-                    Console.WriteLine("{0}  | {1}", cat, url);
+                    Console.WriteLine("{0}  {1}", cat, url.PathAndQuery);
 #endif
-                    tasks.Add(Task.Factory.StartNew(() =>
+                    if (!string.IsNullOrWhiteSpace(content))
                     {
-                        string content = _extractor.Get(url).GetAwaiter().GetResult();
-                        if(!string.IsNullOrWhiteSpace(content))
-                            _classifier.ItemTrain(content, cat);
-                    }));
+                        _classifier.ItemTrain(content, cat);
+                        Interlocked.Increment(ref success);
+                    }
+                    if (!c.Exists)
+                        File.WriteAllText(c.FullName, content ?? string.Empty);
                 }
             }
-
-            Task.Factory.ContinueWhenAll(tasks.ToArray(), arr => 
-            {
-                Console.WriteLine("All {0} requests are done!", arr.Length);
-            });
+            Console.WriteLine("Success: {0:N0} of {1:N0} = {2:N0}%", success, total, success * 100f / total);
         }
 
-        public void Classify(string url)
+        public void Test()
         {
-            var u = new Uri(url);
-            string content = _extractor.Get(u).GetAwaiter().GetResult();
+            Test(Path.Combine(AssemblyDirectory, RECIPES));
+        }
+
+        public void Test(string path)
+        {
+            Train(path);
+
+            Console.WriteLine("==============================================");
+            Console.WriteLine("Test: {0}", path);
+
+            int total = 0;
+            int bad = 0;
+            int failed = 0;
+            var wrongs = new ConcurrentDictionary<string, int>();
+
+            var f = new FileInfo(path);
+            using (FileStream fs = f.OpenRead())
+            using (var sr = new StreamReader(fs))
+            {
+                string line;
+                while ((line = sr.ReadLine()) != null)
+                {
+                    string[] arr = line.Split(null);
+                    string cat = arr.FirstOrDefault();
+                    var url = new Uri(arr.LastOrDefault());
+
+                    Interlocked.Increment(ref total);
+                    FileInfo c = GetCacheFile(url);
+                    string content;
+                    if (c.Exists)
+                        content = File.ReadAllText(c.FullName);
+                    else
+                        content = _extractor.Get(url).GetAwaiter().GetResult();
+
+                    if (string.IsNullOrWhiteSpace(content))
+                        Interlocked.Increment(ref failed);
+                    else
+                    {
+                        Classification<string> r = _classifier.ItemClassify(content, "unknown");
+                        if (string.Compare(r.Category, cat, true) != 0)
+                        {
+                            Interlocked.Increment(ref bad);
+                            wrongs.AddOrUpdate(cat, 1, (k, v) => v + 1);
 #if DEBUG
-            //Console.WriteLine(content);
+                            Console.WriteLine("Expects {0} but {1} @ {2:N0}% for {3}", cat, r.Category, r.Probability * 100, url.PathAndQuery);
 #endif
-            Classification<string> r = _classifier.ItemClassify(content, "unknown");
-            Console.WriteLine("{0} => {1} {2:N0}%", u.PathAndQuery, r.Category, r.Probability * 100);
+                        }
+                        //else
+                        //    Console.Write(".");
+                    }
+                }
+                Console.WriteLine("================================================");
+                Console.WriteLine("{0:N0} wrong of {1:N0} ({2:N0}%)", bad, total, (bad * 100f) / total);
+                Console.WriteLine("{0:N0} fails of {1:N0} ({2:N0}%)", failed, total, (failed * 100f) / total);
+                foreach (var p in wrongs.OrderByDescending(o => o.Value))
+                {
+                    Console.WriteLine("{0} : {1:N0} ({2:N0}%)", p.Key, p.Value, (p.Value * 100f) / total);
+                }
+            }
+        }
+
+        public void Classify(params string[] urls)
+        {
+            foreach (string url in urls)
+            {
+                if (string.IsNullOrWhiteSpace(url))
+                    continue;
+
+                var u = new Uri(url);
+                string content = _extractor.Get(u).GetAwaiter().GetResult();
+#if DEBUG
+                //Console.WriteLine(content);
+#endif
+                Classification<string> r = _classifier.ItemClassify(content, "unknown");
+                Console.WriteLine("{0} => {1} {2:N2}%", u.PathAndQuery, r.Category, r.Probability * 100);
+            }
         }
 
 		static void Print(WordIndex wi)

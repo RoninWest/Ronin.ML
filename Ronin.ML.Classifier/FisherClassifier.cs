@@ -24,11 +24,16 @@ namespace Ronin.ML.Classifier
 		public FisherClassifier(
 			IClassifierData<F, C> data, 
 			Func<T, IEnumerable<F>> getFeatures,
-			Func<C, double> getThreshold) 
-			: base(data, getFeatures, getThreshold)
+			Func<C, double> getThreshold = null)
+            : base(data, getFeatures, getThreshold ?? DefaultThreshold)
 		{
 			
 		}
+
+        static double DefaultThreshold(C cat) 
+        {
+            return .1f;
+        }
 
 		/// <summary>
 		/// Fisher method's override
