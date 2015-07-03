@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -60,11 +60,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Ronin.ML.Classifier\Ronin.ML.Classifier.csproj">
-      <Project>{f400f34f-efe1-4243-9d0c-299c8df9aeb0}</Project>
+      <Project>{F400F34F-EFE1-4243-9D0C-299C8DF9AEB0}</Project>
       <Name>Ronin.ML.Classifier</Name>
     </ProjectReference>
     <ProjectReference Include="..\Ronin.ML.Text\Ronin.ML.Text.csproj">
-      <Project>{4588a88e-b5c9-411f-a07d-a5fbe972a36e}</Project>
+      <Project>{4588A88E-B5C9-411F-A07D-A5FBE972A36E}</Project>
       <Name>Ronin.ML.Text</Name>
     </ProjectReference>
   </ItemGroup>

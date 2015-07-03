@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -32,18 +32,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MongoDB.Bson, Version=2.0.1.27, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MongoDB.Bson.2.0.1\lib\net45\MongoDB.Bson.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="MongoDB.Driver, Version=2.0.1.27, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MongoDB.Driver.2.0.1\lib\net45\MongoDB.Driver.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="MongoDB.Driver.Core, Version=2.0.1.27, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MongoDB.Driver.Core.2.0.1\lib\net45\MongoDB.Driver.Core.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
     </Reference>
@@ -54,6 +42,15 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="MongoDB.Bson, Version=2.0.1.27, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\MongoDB.Bson.2.0.1\lib\net45\MongoDB.Bson.dll</HintPath>
+    </Reference>
+    <Reference Include="MongoDB.Driver, Version=2.0.1.27, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\MongoDB.Driver.2.0.1\lib\net45\MongoDB.Driver.dll</HintPath>
+    </Reference>
+    <Reference Include="MongoDB.Driver.Core, Version=2.0.1.27, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\MongoDB.Driver.Core.2.0.1\lib\net45\MongoDB.Driver.Core.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BayesianWordClassifier.cs" />
@@ -70,15 +67,15 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Ronin.ML.Classifier.MongoDB\Ronin.ML.Classifier.MongoDB.csproj">
-      <Project>{995f2a35-b15c-4164-86ba-60b819a4f97d}</Project>
+      <Project>{995F2A35-B15C-4164-86BA-60B819A4F97D}</Project>
       <Name>Ronin.ML.Classifier.MongoDB</Name>
     </ProjectReference>
     <ProjectReference Include="..\Ronin.ML.Classifier\Ronin.ML.Classifier.csproj">
-      <Project>{f400f34f-efe1-4243-9d0c-299c8df9aeb0}</Project>
+      <Project>{F400F34F-EFE1-4243-9D0C-299C8DF9AEB0}</Project>
       <Name>Ronin.ML.Classifier</Name>
     </ProjectReference>
     <ProjectReference Include="..\Ronin.ML.Text\Ronin.ML.Text.csproj">
-      <Project>{4588a88e-b5c9-411f-a07d-a5fbe972a36e}</Project>
+      <Project>{4588A88E-B5C9-411F-A07D-A5FBE972A36E}</Project>
       <Name>Ronin.ML.Text</Name>
     </ProjectReference>
   </ItemGroup>

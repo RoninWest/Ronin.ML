@@ -110,6 +110,7 @@ namespace Ronin.ML.Classifier.Test
 		public void FeatureCountTest(TrainingSet set)
 		{
 			DummyClassifier cf = BuildAndTrain(set);
+			Assert.IsNotNull (cf);
 			double v = _dataSrc.CountFeature(set.TestData, set.Category);
 			Assert.AreEqual(set.TestResult.ToString("N3"), v.ToString("N3"));
 		}

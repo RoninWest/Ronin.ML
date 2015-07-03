@@ -88,7 +88,7 @@ namespace Ronin.ML.Classifier
 					continue;
 
 				double bestThreshold = _getThreshold(best);
-				if (probs[cat] * _getThreshold(best) > probs[best])
+				if (probs[cat] * bestThreshold > probs[best])
 				{
 					best = defaultCategory;
 					break;
