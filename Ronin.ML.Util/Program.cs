@@ -58,11 +58,16 @@ namespace Ronin.ML.Util
             {
                 Console.WriteLine("Took: {0}", DateTime.UtcNow - started);
 #if DEBUG
-                ConsoleKeyInfo k;
+				ConsoleKeyInfo k;
                 do
                 {
-                    Console.WriteLine("\r\nPress ESC Key to quit");
+					Console.WriteLine("\r\nPress ESC Key to quit");
                     k = Console.ReadKey();
+					while(k.KeyChar == '\0') //needed this clause to work with Mono console
+					{
+						Thread.Sleep(200);
+						k = Console.ReadKey();
+					}
                 }
                 while (k.Key != ConsoleKey.Escape);
 #endif
@@ -71,7 +76,7 @@ namespace Ronin.ML.Util
 
         static string Usage
         {
-            get { return @"Usage:\r\ntrain path.txt\r\nclassify url"; }
+            get { return @"Usage:\r\ntrain path.txt\r\nclassify url.\r\ntest"; }
         }
 
         readonly WordIndexGenerator _indexer;
