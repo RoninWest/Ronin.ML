@@ -54,6 +54,9 @@
     <Compile Include="IClassifierData.cs" />
     <Compile Include="IDataStorable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="BayesianOptimizer.cs" />
+    <Compile Include="OptimizerResult.cs" />
+    <Compile Include="RunResult.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Ronin.ML.Classifier.nuspec" />

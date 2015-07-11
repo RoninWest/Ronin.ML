@@ -219,7 +219,7 @@ namespace Ronin.ML.Util
 
         static readonly Regex RE_FILE_SAFE = new Regex(@"[^0-9a-z_]+", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        public void Train(string path)
+		public void Train(string path)
         {
             Console.WriteLine("==============================================");
             Console.WriteLine("Train: {0}", path);
@@ -263,7 +263,7 @@ namespace Ronin.ML.Util
             Console.WriteLine("Success: {0:N0} of {1:N0} = {2:N0}%", success, total, success * 100f / total);
         }
 
-        public void Test()
+		public void Test()
         {
             Test(Path.Combine(AssemblyDirectory, RECIPES));
         }
